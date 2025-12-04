@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="AR ялиночка на долоні для дітей">
-    <title>🎄 Ялиночка на долоні</title>
+    <title>🎄 Ялиночка </title>
 
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
@@ -171,7 +171,7 @@
     <div class="loader" id="loader">
         <div class="pulse">🎄</div>
         <h1>Ялиночка на долоні</h1>
-        <p>Наведи камеру на маркер на долоні</p>
+        <p>Наведи камеру на ялинку</p>
         <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.7;">Чекай, завантажується...</p>
     </div>
     
@@ -201,27 +201,26 @@
 
 <a-entity mindar-image-target="targetIndex: 0">
     <!-- Гірлянда всередині маркера-ялинки -->
-    <!-- Позиція 0 0 0 - точно в центрі маркера -->
-    <!-- Масштаб 0.25 - дуже маленька, щоб вміститися в маркер -->
-    <a-entity id="garland-container" rotation="0 0 0" position="0 0 0" scale="0.25 0.25 0.25">
+    <!-- ЗБІЛЬШИЛИ масштаб з 0.25 до 0.5 (в 2 рази більше) -->
+    <a-entity id="garland-container" rotation="0 0 0" position="0 0 0" scale="1.5 1.5 1.5">
         
-        <!-- 7 кульок - дуже маленькі координати для маленької ялинки -->
-        <!-- Центр маркера - це 0,0,0. Треба розташувати всередині маркера -->
-        <a-sphere id="light1" class="garland-light" position="0 0.08 0" radius="0.03" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light2" class="garland-light" position="-0.06 0.03 0" radius="0.03" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light3" class="garland-light" position="0.06 0.03 0" radius="0.03" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light4" class="garland-light" position="-0.09 -0.02 0" radius="0.03" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light5" class="garland-light" position="0.09 -0.02 0" radius="0.03" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light6" class="garland-light" position="-0.04 -0.07 0" radius="0.03" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light7" class="garland-light" position="0.04 -0.07 0" radius="0.03" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <!-- 7 кульок - збільшені в 2 рази і зміщені вниз -->
+        <!-- ЗБІЛЬШИЛИ radius з 0.03 до 0.09 -->
+        <a-sphere id="light1" class="garland-light" position="0 0.08 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light2" class="garland-light" position="-0.07 0.02 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light3" class="garland-light" position="0.07 0.02 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light4" class="garland-light" position="-0.09 -0.04 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light5" class="garland-light" position="0.09 -0.04 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light6" class="garland-light" position="-0.05 -0.10 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light7" class="garland-light" position="0.05 -0.10 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
 
-        <!-- Снігопад над ялинкою -->
-        <a-entity id="snow-container" position="0 0.15 0" visible="false">
-            <a-entity particle-system="preset: snow; color: #ffffff,#ccccff; particleCount: 150; velocityValue: 0 0.15 0; velocitySpread: 0.6 0.1 0.6; opacity: 0.6; size: 0.006 0.02; accelerationValue: 0 -0.6 0;"></a-entity>
+        <!-- Снігопад - теж збільшимо -->
+        <a-entity id="snow-container" position="0 0.2 0" visible="false">
+            <a-entity particle-system="preset: snow; color: #ffffff,#ccccff; particleCount: 200; velocityValue: 0 0.2 0; velocitySpread: 0.8 0.15 0.8; opacity: 0.6; size: 0.008 0.03; accelerationValue: 0 -0.8 0;"></a-entity>
         </a-entity>
 
-        <!-- Світло - в центрі ялинки -->
-        <a-light id="garland-light" type="point" color="#FFD700" intensity="0" distance="1" position="0 0 0"></a-light>
+        <!-- Світло - теж збільшимо -->
+        <a-light id="garland-light" type="point" color="#FFD700" intensity="0" distance="1.5" position="0 0 0"></a-light>
     </a-entity>
 </a-entity>
     </a-scene>
@@ -481,17 +480,18 @@
                 const oldAnims = light.querySelectorAll('a-animation');
                 oldAnims.forEach(anim => anim.remove());
                 
-                // ДОДАЄМО ПУЛЬСАЦІЮ: кулька збільшується-зменшується
-                const pulseAnim = document.createElement('a-animation');
-                pulseAnim.setAttribute('attribute', 'scale');
-                pulseAnim.setAttribute('from', '1 1 1');
-                pulseAnim.setAttribute('to', '1.5 1.5 1.5'); // Збільшуємо на 50%
-                pulseAnim.setAttribute('dur', '500 + Math.random() * 200'); // Випадкова швидкість
-                pulseAnim.setAttribute('direction', 'alternate');
-                pulseAnim.setAttribute('repeat', 'indefinite');
-                pulseAnim.setAttribute('begin', index * 70 + 'ms'); // Послідовне запуск
-                pulseAnim.setAttribute('easing', 'ease-in-out');
-                light.appendChild(pulseAnim);
+// ДОДАЄМО ПУЛЬСАЦІЮ: кулька збільшується-зменшується
+const pulseAnim = document.createElement('a-animation');
+pulseAnim.setAttribute('attribute', 'scale');
+pulseAnim.setAttribute('from', '1 1 1');
+// ЗМІНИТИ з 1.5 на 2.5 (збільшення в 3 рази)
+pulseAnim.setAttribute('to', '1.8 1.8 1.8'); 
+pulseAnim.setAttribute('dur', '500 + Math.random() * 200');
+pulseAnim.setAttribute('direction', 'alternate');
+pulseAnim.setAttribute('repeat', 'indefinite');
+pulseAnim.setAttribute('begin', index * 70 + 'ms');
+pulseAnim.setAttribute('easing', 'ease-in-out');
+light.appendChild(pulseAnim);
                 
                 // Додаємо анімацію мерехтіння (інтенсивність)
                 const flickerAnim = document.createElement('a-animation');
@@ -664,3 +664,4 @@
     </script>
 </body>
 </html>
+

@@ -449,100 +449,90 @@
         }
 
         // Функція запалювання гірлянди
-        function igniteGarland() {
-            if (isGarlandOn) return;
-            
-            console.log('✨ Запалюємо ялиночку!');
-            isGarlandOn = true;
-            lightsBtn.textContent = '✨ Ялиночка горить!';
-            lightsBtn.classList.add('active');
-            
-            // Спроба відтворити звук
-            if (igniteSound) {
-                igniteSound.currentTime = 0;
-                igniteSound.play().catch(e => console.log('Не вдалося відтворити звук'));
-            }
-            
-            // Увімкнути світло
-            garlandLight.setAttribute('intensity', '1');
-            garlandLight.setAttribute('color', '#FFD700');
-            
-            // Більш реалістичні кольори для вогників
-            const fireColors = ['#FFFF00', '#FFA500', '#FF4500', '#FFD700', '#FF8C00'];
-            
-            // Анімація вогників з пульсацією
-            lights.forEach((light, index) => {
-                if (!light) return;
-                
-                // Випадковий колір вогника
-                const color = fireColors[Math.floor(Math.random() * fireColors.length)];
-                
-                // Змінюємо колір та прозорість
-                light.setAttribute('opacity', '1');
-                light.setAttribute('color', color);
-                light.setAttribute('emissive', color);
-                light.setAttribute('emissive-intensity', '2');
-                light.setAttribute('scale', '1 1 1');
-                
-                // Видаляємо старі анімації
-                const oldAnims = light.querySelectorAll('a-animation');
-                oldAnims.forEach(anim => anim.remove());
-                
-// ДОДАЄМО ПУЛЬСАЦІЮ: кулька збільшується-зменшується
-const pulseAnim = document.createElement('a-animation');
-pulseAnim.setAttribute('attribute', 'scale');
-pulseAnim.setAttribute('from', '1 1 1');
-// ЗМІНИТИ з 1.5 на 2.5 (збільшення в 3 рази)
-pulseAnim.setAttribute('to', '1.8 1.8 1.8'); 
-pulseAnim.setAttribute('dur', '500 + Math.random() * 200');
-pulseAnim.setAttribute('direction', 'alternate');
-pulseAnim.setAttribute('repeat', 'indefinite');
-pulseAnim.setAttribute('begin', index * 70 + 'ms');
-pulseAnim.setAttribute('easing', 'ease-in-out');
-light.appendChild(pulseAnim);
-                
-                // Додаємо анімацію мерехтіння (інтенсивність)
-                const flickerAnim = document.createElement('a-animation');
-                flickerAnim.setAttribute('attribute', 'emissive-intensity');
-                flickerAnim.setAttribute('from', '1.8');
-                flickerAnim.setAttribute('to', '3.2');
-                flickerAnim.setAttribute('dur', '200 + Math.random() * 100');
-                flickerAnim.setAttribute('direction', 'alternate');
-                flickerAnim.setAttribute('repeat', 'indefinite');
-                flickerAnim.setAttribute('begin', Math.random() * 600 + 'ms');
-                flickerAnim.setAttribute('easing', 'ease-in-out');
-                light.appendChild(flickerAnim);
-                
-                // Анімація кольору (для ефекту полум'я)
-                const colorAnim = document.createElement('a-animation');
-                colorAnim.setAttribute('attribute', 'color');
-                colorAnim.setAttribute('from', color);
-                colorAnim.setAttribute('to', fireColors[(index + 1) % fireColors.length]);
-                colorAnim.setAttribute('dur', '1500 + Math.random() * 500');
-                colorAnim.setAttribute('direction', 'alternate');
-                colorAnim.setAttribute('repeat', 'indefinite');
-                colorAnim.setAttribute('begin', Math.random() * 300 + 'ms');
-                colorAnim.setAttribute('easing', 'ease-in-out');
-                light.appendChild(colorAnim);
-                
-                // Додаткова анімація для плавності
-                const floatAnim = document.createElement('a-animation');
-                floatAnim.setAttribute('attribute', 'position');
-                floatAnim.setAttribute('from', light.getAttribute('position'));
-                const pos = light.getAttribute('position');
-                floatAnim.setAttribute('to', `${pos.x} ${pos.y + 0.01} ${pos.z}`);
-                floatAnim.setAttribute('dur', '1000 + Math.random() * 500');
-                floatAnim.setAttribute('direction', 'alternate');
-                floatAnim.setAttribute('repeat', 'indefinite');
-                floatAnim.setAttribute('begin', Math.random() * 400 + 'ms');
-                floatAnim.setAttribute('easing', 'ease-in-out');
-                light.appendChild(floatAnim);
-            });
-            
-            // Увімкнути снігопад
-            if (snowContainer) {
-                snowContainer.setAttribute('visible', 'true');
-            }
+// НОВА КРАСИВА ФУНКЦІЯ ЗАПАЛЮВАННЯ ГІРЛЯНДИ (2025 року)
+function igniteGarland() {
+    if (isGarlandOn) return;
+
+    console.log('Ялиночка запалюється!');
+    isGarlandOn = true;
+    lightsBtn.textContent = 'Ялиночка горить!';
+    lightsBtn.classList.add('active');
+
+    // Звук (якщо буде нормальний файл — заробить)
+    if (igniteSound) {
+        igniteSound.currentTime = 0;
+        igniteSound.play().catch(() => {});
+    }
+
+    // Центральне тепле світло
+    garlandLight.setAttribute('intensity', '1.2');
+    garlandLight.setAttribute('color', '#ffaa33');
+
+    // тепле золотисте світло
+
+    // Різнокольорові класичні новорічні вогники
+    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff8800', '#ff00ff', '#00ffff'];
+
+    lights.forEach((light, index) => {
+        if (!light) return;
+
+        const color = colors[index % colors.length];
+
+        // Базові властивості
+        light.setAttribute('color', color);
+        light.setAttribute('emissive', color);
+        light.setAttribute('emissive-intensity', 2);
+        light.setAttribute('opacity', 1);
+
+        // Прибираємо старі анімації
+        light.querySelectorAll('a-animation').forEach(a => a.remove());
+
+        // 1. Сильне мерехтіння яскравості (як справжня лампочка)
+        const flicker = document.createElement('a-animation');
+        flicker.setAttribute('attribute', 'emissive-intensity');
+        flicker.setAttribute('from', '1');
+        flicker.setAttribute('to', '4.5');
+        flicker.setAttribute('dur', 180 + index * 60 + Math.random() * 100);
+        flicker.setAttribute('direction', 'alternate');
+        flicker.setAttribute('repeat', 'indefinite');
+        flicker.setAttribute('easing', 'ease-in-out');
+        light.appendChild(flicker);
+
+        // 2. Пульсація розміру (кулька «дихає»)
+        const pulse = document.createElement('a-animation');
+        pulse.setAttribute('attribute', 'scale');
+        pulse.setAttribute('from', '1 1 1');
+        pulse.setAttribute('to', '1.4 1.4 1.4');
+        pulse.setAttribute('dur', 800 + index * 100);
+        pulse.setAttribute('direction', 'alternate');
+        pulse.setAttribute('repeat', 'indefinite');
+        pulse.setAttribute('easing', 'ease-in-out');
+        light.appendChild(pulse);
+
+        // 3. Легке коливання в просторі (як на вітрі)
+        const pos = light.getAttribute('position');
+        const sway = document.createElement('a-animation');
+        sway.setAttribute('attribute', 'position');
+        sway.setAttribute('to', `${pos.x + (Math.random()-0.5)*0.03} ${pos.y + 0.02} ${pos.z + 0.03}`);
+        sway.setAttribute('dur', 2000 + index * 200);
+        sway.setAttribute('direction', 'alternate');
+        sway.setAttribute('repeat', 'indefinite');
+        sway.setAttribute('easing', 'ease-in-out');
+        light.appendChild(sway);
+    });
+
+    // Снігопад
+    if (snowContainer) snowContainer.setAttribute('visible', 'true');
+
+    // Автовимкнення через 25 секунд
+    clearTimeout(garlandTimeout);
+    garlandTimeout = setTimeout(() => {
+        if (isGarlandOn) {
+            extinguishGarland();
+            showSpeechBubble("Скажи «Ялиночка» ще раз!");
+        }
+    }, 25000);
+}
             
             // Автоматичне вимкнення через 25 секунд
             clearTimeout(garlandTimeout);
@@ -672,5 +662,6 @@ light.appendChild(pulseAnim);
     </script>
 </body>
 </html>
+
 
 

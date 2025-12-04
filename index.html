@@ -30,14 +30,12 @@
             background: transparent;
         }
 
-        /* Лоадер - ЗМІНЕНО НА ПРОЗОРИЙ */
         .loader {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* МАЙЖЕ ПРОЗОРИЙ ФОН */
             background: rgba(0, 0, 0, 0.3);
             z-index: 9999;
             display: flex;
@@ -77,7 +75,6 @@
             filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
         }
 
-        /* Проста кнопка */
         .simple-btn {
             position: absolute;
             bottom: 30px;
@@ -115,7 +112,6 @@
             border-color: #ffcdd2;
         }
 
-        /* Спіч-бабл */
         .speech-bubble {
             position: absolute;
             top: 50px;
@@ -136,41 +132,19 @@
             min-width: 200px;
         }
 
-        /* Адаптивність */
         @media (max-width: 768px) {
-            .simple-btn {
-                padding: 16px 35px;
-                font-size: 1.1em;
-                bottom: 25px;
-            }
-            
-            .speech-bubble {
-                font-size: 1.1em;
-                top: 40px;
-            }
+            .simple-btn { padding: 16px 35px; font-size: 1.1em; bottom: 25px; }
+            .speech-bubble { font-size: 1.1em; top: 40px; }
         }
 
         @media (max-width: 480px) {
-            .simple-btn {
-                padding: 14px 30px;
-                font-size: 1em;
-                bottom: 20px;
-                width: 90%;
-                max-width: 300px;
-            }
-            
-            .loader h1 {
-                font-size: 1.5em;
-            }
-            
-            .pulse {
-                font-size: 3em;
-            }
+            .simple-btn { padding: 14px 30px; font-size: 1em; bottom: 20px; width: 90%; max-width: 300px; }
+            .loader h1 { font-size: 1.5em; }
+            .pulse { font-size: 3em; }
         }
     </style>
 </head>
 <body>
-    <!-- Лоадер -->
     <div class="loader" id="loader">
         <div class="pulse">🎄</div>
         <h1>Ялиночка на долоні</h1>
@@ -178,10 +152,8 @@
         <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.7;">Чекай, завантажується...</p>
     </div>
     
-    <!-- Спіч-бабл для розпізнавання мови -->
     <div class="speech-bubble" id="speech-bubble"></div>
 
-    <!-- A-Frame сцена -->
     <a-scene
         mindar-image="imageTargetSrc: marcher.mind;"
         vr-mode-ui="enabled: false"
@@ -202,42 +174,35 @@
             look-controls="enabled: true"
         ></a-camera>
 
-<a-entity mindar-image-target="targetIndex: 0">
-    <!-- Гірлянда всередині маркера-ялинки -->
-    <!-- ЗМІНЕНО: масштаб 0.5 (в 2 рази більше) -->
-    <a-entity id="garland-container" rotation="0 0 0" position="0 -0.05 0" scale="0.5 0.5 0.5">
-        <!-- 13 вогників гірлянди — ЗМЕНШЕНІ РАДІУСИ: 0.04 (замість 0.05-0.08) -->
-        <a-sphere class="garland-light" position="0.00  0.32  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>   <!-- верхівка -->
-        <a-sphere class="garland-light" position="-0.10 0.26  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position=" 0.11 0.25  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position="-0.17 0.18  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position=" 0.16 0.17  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position="-0.22 0.09  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position=" 0.20 0.08  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position="-0.19 0.00  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position=" 0.18 -0.01  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position="-0.15 -0.08  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position=" 0.14 -0.09  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere class="garland-light" position="-0.09 -0.16  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <!-- низ -->
-        <a-sphere class="garland-light" position=" 0.08 -0.17  0.01" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-entity id="garland-container" rotation="0 0 0" position="0 0 0" scale="1 1 1">
+                <!-- Гірлянда — 13 кульок у зигзаг-формі -->
+                <a-sphere class="garland-light" position="0.00  0.30  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="0.06  0.25  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="-0.06 0.20  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="0.08  0.15  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="-0.08 0.10  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="0.10  0.05  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="-0.10 0.00  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="0.10  -0.05 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="-0.10 -0.10 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="0.09  -0.15 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="-0.09 -0.20 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="0.07  -0.25 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="-0.07 -0.30 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
 
-        <!-- Снігопад трохи вище -->
-        <a-entity id="snow-container" position="0 0.4 0" visible="false">
-            <a-entity particle-system="preset: snow; particleCount: 200; color: #fff,#eee; size: 0.01 0.03; opacity: 0.6; velocityValue: 0 0.2 0; velocitySpread: 0.6 0.15 0.6; accelerationValue: 0 -0.6 0;"></a-entity>
+                <a-entity id="snow-container" position="0 0.4 0" visible="false">
+                    <a-entity particle-system="preset: snow; particleCount: 200; color: #fff,#eee; size: 0.01 0.03; opacity: 0.6; velocityValue: 0 0.2 0; velocitySpread: 0.6 0.15 0.6; accelerationValue: 0 -0.6 0;"></a-entity>
+                </a-entity>
+
+                <a-light id="garland-light" type="point" intensity="0" color="#ffaa33" distance="1.5" decay="1" position="0 0.1 0.002"></a-light>
+            </a-entity>
         </a-entity>
-
-        <!-- Центральне тепле світло (правильне) -->
-        <a-light id="garland-light" type="point" intensity="0" color="#ffaa33" distance="1.5" decay="1" position="0 0.1 0"></a-light>
-    </a-entity>
-</a-entity>
     </a-scene>
 
-    <!-- Проста кнопка -->
     <button id="lights-btn" class="simple-btn" disabled>🎄 Скажи "Ялиночка!"</button>
 
     <script>
-        // Посилання на елементи
         const loader = document.getElementById('loader');
         const speechBubble = document.getElementById('speech-bubble');
         const targetEntity = document.querySelector('[mindar-image-target]');
@@ -247,31 +212,26 @@
         const garlandLight = document.getElementById('garland-light');
         const igniteSound = document.getElementById('ignite-sound');
         
-        // Масив з 13 кульками
         const lights = Array.from(document.querySelectorAll('.garland-light'));
         
-        // Змінні стану
         let isGarlandOn = false;
         let garlandTimeout = null;
         let speechRecognition = null;
         let isSpeechActive = false;
         let isRecognitionStarting = false;
-        
-        // Функція показу спіч-бабла
+        let waveTimeouts = [];
+
         function showSpeechBubble(text) {
             speechBubble.textContent = text;
             speechBubble.style.display = 'block';
-            
             clearTimeout(speechBubble.timeout);
             speechBubble.timeout = setTimeout(() => {
                 speechBubble.style.display = 'none';
             }, 2000);
         }
 
-        // Ініціалізація розпізнавання мови
         function initSpeechRecognition() {
             if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-                console.log('Розпізнавання мови не підтримується');
                 showSpeechBubble("🎤 Браузер не підтримує голос!");
                 return null;
             }
@@ -284,7 +244,6 @@
             recognition.maxAlternatives = 3;
             
             recognition.onstart = () => {
-                console.log('🎤 Розпізнавання мови активовано');
                 isSpeechActive = true;
                 isRecognitionStarting = false;
                 showSpeechBubble("🎤 Слухаю... скажи 'Ялиночка!'");
@@ -294,11 +253,7 @@
             
             recognition.onresult = (event) => {
                 const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
-                console.log('🎤 Розпізнано:', transcript);
-                
                 if (transcript.includes('ялиночка')) {
-                    console.log('🔥 Слово "Ялиночка" знайдено!');
-                    
                     if (!isGarlandOn) {
                         igniteGarland();
                         showSpeechBubble("✨ Ялиночка запалилася!");
@@ -312,16 +267,12 @@
             };
             
             recognition.onerror = (event) => {
-                console.error('Помилка розпізнавання мови:', event.error);
                 isRecognitionStarting = false;
-                
                 if (event.error === 'not-allowed') {
                     showSpeechBubble("🔇 Дозволь доступ до мікрофона!");
                     lightsBtn.textContent = "🎤 Дозволь мікрофон";
                     lightsBtn.classList.remove('active');
                     isSpeechActive = false;
-                } else if (event.error === 'no-speech') {
-                    // Ігноруємо
                 } else {
                     setTimeout(() => {
                         if (isSpeechActive && !isRecognitionStarting) {
@@ -332,7 +283,6 @@
             };
             
             recognition.onend = () => {
-                console.log('🎤 Розпізнавання мови завершено');
                 if (isSpeechActive && !isRecognitionStarting) {
                     setTimeout(() => {
                         try {
@@ -341,12 +291,9 @@
                                 recognition.start();
                             }
                         } catch (e) {
-                            console.log('Не вдалося перезапустити розпізнавання:', e);
                             isRecognitionStarting = false;
                             setTimeout(() => {
-                                if (isSpeechActive) {
-                                    startSpeechRecognition();
-                                }
+                                if (isSpeechActive) startSpeechRecognition();
                             }, 2000);
                         }
                     }, 500);
@@ -356,91 +303,36 @@
             return recognition;
         }
         
-        // Функція старту розпізнавання мови
         function startSpeechRecognition() {
             if (isRecognitionStarting) return;
-            
-            if (!speechRecognition) {
-                speechRecognition = initSpeechRecognition();
-            }
-            
+            if (!speechRecognition) speechRecognition = initSpeechRecognition();
             if (speechRecognition) {
                 try {
                     isRecognitionStarting = true;
                     speechRecognition.start();
                 } catch (e) {
-                    console.error('Помилка старту розпізнавання:', e);
                     isRecognitionStarting = false;
                     showSpeechBubble("❌ Помилка мікрофона");
                     setTimeout(() => {
-                        if (!isRecognitionStarting && isSpeechActive) {
-                            startSpeechRecognition();
-                        }
+                        if (!isRecognitionStarting && isSpeechActive) startSpeechRecognition();
                     }, 2000);
                 }
             }
         }
         
-        // Функція зупинки розпізнавання мови
         function stopSpeechRecognition() {
             isSpeechActive = false;
             isRecognitionStarting = false;
             if (speechRecognition) {
-                try {
-                    speechRecognition.stop();
-                } catch (e) {
-                    console.error('Помилка зупинки розпізнавання:', e);
-                }
+                try { speechRecognition.stop(); } catch (e) {}
                 speechRecognition = null;
             }
-            
             lightsBtn.textContent = '🎄 Скажи "Ялиночка!"';
             lightsBtn.classList.remove('active');
         }
-        
-        // Логіка відстеження маркера
-        if (targetEntity) {
-            targetEntity.addEventListener('targetFound', () => {
-                console.log("🎯 Маркер знайдено!");
-                loader.style.display = 'none';
-                if (garlandContainer) {
-                    garlandContainer.setAttribute('visible', 'true');
-                }
-                lightsBtn.disabled = false;
-                
-                setTimeout(() => {
-                    if (!isSpeechActive) {
-                        startSpeechRecognition();
-                    }
-                }, 1000);
-                
-                setTimeout(() => {
-                    showSpeechBubble("🎄 Тримай маркер на долоні!");
-                }, 1500);
-            });
 
-            targetEntity.addEventListener('targetLost', () => {
-                console.log("ℹ️ Маркер втрачено.");
-                if (garlandContainer) {
-                    garlandContainer.setAttribute('visible', 'false');
-                }
-                stopGarland();
-                stopSpeechRecognition();
-                
-                loader.style.display = 'flex';
-                speechBubble.style.display = 'none';
-                resetUI();
-                lightsBtn.disabled = true;
-                
-                isGarlandOn = false;
-            });
-        }
-
-        // Функція запалювання гірлянди
         function igniteGarland() {
             if (isGarlandOn) return;
-
-            console.log('Ялиночка запалюється!');
             isGarlandOn = true;
             lightsBtn.textContent = '✨ Ялиночка горить!';
             lightsBtn.classList.add('active');
@@ -451,54 +343,51 @@
             }
 
             garlandLight.setAttribute('intensity', '1.0');
-            garlandLight.setAttribute('color', '#ffaa33');
 
             const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff8800', '#ff00ff', '#00ffff'];
+            
+            // Очистити попередні таймери
+            waveTimeouts.forEach(t => clearTimeout(t));
+            waveTimeouts = [];
 
+            // Запалювати кульки послідовно (хвилею)
             lights.forEach((light, index) => {
                 if (!light) return;
+                const delay = index * 150; // кожна кулька через 150 мс
 
-                const color = colors[index % colors.length];
+                const timeout = setTimeout(() => {
+                    if (!isGarlandOn || !light) return;
 
-                light.setAttribute('color', color);
-                light.setAttribute('emissive', color);
-                light.setAttribute('emissive-intensity', 2);
-                light.setAttribute('opacity', 1);
+                    const color = colors[index % colors.length];
+                    light.setAttribute('color', color);
+                    light.setAttribute('emissive', color);
+                    light.setAttribute('opacity', 1);
+                    light.setAttribute('emissive-intensity', 2);
 
-                light.querySelectorAll('a-animation').forEach(a => a.remove());
+                    // Мерехтіння
+                    const flicker = document.createElement('a-animation');
+                    flicker.setAttribute('attribute', 'emissive-intensity');
+                    flicker.setAttribute('from', '1.5');
+                    flicker.setAttribute('to', '3.5');
+                    flicker.setAttribute('dur', 300 + Math.random() * 200);
+                    flicker.setAttribute('direction', 'alternate');
+                    flicker.setAttribute('repeat', 'indefinite');
+                    flicker.setAttribute('easing', 'ease-in-out');
+                    light.appendChild(flicker);
 
-                // 1. Мерехтіння
-                const flicker = document.createElement('a-animation');
-                flicker.setAttribute('attribute', 'emissive-intensity');
-                flicker.setAttribute('from', '1');
-                flicker.setAttribute('to', '4');
-                flicker.setAttribute('dur', 180 + index * 60 + Math.random() * 100);
-                flicker.setAttribute('direction', 'alternate');
-                flicker.setAttribute('repeat', 'indefinite');
-                flicker.setAttribute('easing', 'ease-in-out');
-                light.appendChild(flicker);
+                    // Пульсація (легка)
+                    const pulse = document.createElement('a-animation');
+                    pulse.setAttribute('attribute', 'scale');
+                    pulse.setAttribute('from', '1 1 1');
+                    pulse.setAttribute('to', '1.3 1.3 1.3');
+                    pulse.setAttribute('dur', 1000 + Math.random() * 500);
+                    pulse.setAttribute('direction', 'alternate');
+                    pulse.setAttribute('repeat', 'indefinite');
+                    pulse.setAttribute('easing', 'ease-in-out');
+                    light.appendChild(pulse);
 
-                // 2. Пульсація розміру (1.5 замість 1.4)
-                const pulse = document.createElement('a-animation');
-                pulse.setAttribute('attribute', 'scale');
-                pulse.setAttribute('from', '1 1 1');
-                pulse.setAttribute('to', '1.5 1.5 1.5');
-                pulse.setAttribute('dur', 800 + index * 100);
-                pulse.setAttribute('direction', 'alternate');
-                pulse.setAttribute('repeat', 'indefinite');
-                pulse.setAttribute('easing', 'ease-in-out');
-                light.appendChild(pulse);
-
-                // 3. Коливання
-                const pos = light.getAttribute('position');
-                const sway = document.createElement('a-animation');
-                sway.setAttribute('attribute', 'position');
-                sway.setAttribute('to', `${pos.x + (Math.random()-0.5)*0.02} ${pos.y + 0.015} ${pos.z + 0.02}`);
-                sway.setAttribute('dur', 2000 + index * 200);
-                sway.setAttribute('direction', 'alternate');
-                sway.setAttribute('repeat', 'indefinite');
-                sway.setAttribute('easing', 'ease-in-out');
-                light.appendChild(sway);
+                }, delay);
+                waveTimeouts.push(timeout);
             });
 
             if (snowContainer) snowContainer.setAttribute('visible', 'true');
@@ -512,21 +401,17 @@
             }, 25000);
         }
 
-        // Функція вимкнення гірлянди
         function extinguishGarland() {
             if (!isGarlandOn) return;
-            
-            console.log('💡 Вимкнути ялиночку');
             isGarlandOn = false;
             lightsBtn.textContent = '🎄 Скажи "Ялиночка!"';
             lightsBtn.classList.remove('active');
-            
             garlandLight.setAttribute('intensity', '0');
+            if (snowContainer) snowContainer.setAttribute('visible', 'false');
             
-            if (snowContainer) {
-                snowContainer.setAttribute('visible', 'false');
-            }
-            
+            waveTimeouts.forEach(t => clearTimeout(t));
+            waveTimeouts = [];
+
             lights.forEach(light => {
                 if (!light) return;
                 light.setAttribute('opacity', '0.3');
@@ -534,26 +419,45 @@
                 light.setAttribute('emissive', '#000000');
                 light.setAttribute('emissive-intensity', '0');
                 light.setAttribute('scale', '1 1 1');
-                
-                const animations = light.querySelectorAll('a-animation');
-                animations.forEach(anim => anim.remove());
+                light.querySelectorAll('a-animation').forEach(a => a.remove());
             });
-            
             clearTimeout(garlandTimeout);
         }
 
-        // Функція зупинки гірлянди
         function stopGarland() {
             extinguishGarland();
         }
 
-        // Функція скидання UI
         function resetUI() {
             lightsBtn.textContent = '🎄 Скажи "Ялиночка!"';
             lightsBtn.classList.remove('active');
         }
 
-        // Обробник кнопки
+        if (targetEntity) {
+            targetEntity.addEventListener('targetFound', () => {
+                loader.style.display = 'none';
+                if (garlandContainer) garlandContainer.setAttribute('visible', 'true');
+                lightsBtn.disabled = false;
+                setTimeout(() => {
+                    if (!isSpeechActive) startSpeechRecognition();
+                }, 1000);
+                setTimeout(() => {
+                    showSpeechBubble("🎄 Тримай маркер на долоні!");
+                }, 1500);
+            });
+
+            targetEntity.addEventListener('targetLost', () => {
+                if (garlandContainer) garlandContainer.setAttribute('visible', 'false');
+                stopGarland();
+                stopSpeechRecognition();
+                loader.style.display = 'flex';
+                speechBubble.style.display = 'none';
+                resetUI();
+                lightsBtn.disabled = true;
+                isGarlandOn = false;
+            });
+        }
+
         lightsBtn.addEventListener('click', () => {
             if (!isGarlandOn) {
                 igniteGarland();
@@ -564,56 +468,42 @@
             }
         });
 
-        // Клавіатурне управління
         document.addEventListener('keydown', (e) => {
-            if (e.key === ' ') {
-                if (!lightsBtn.disabled) {
-                    if (!isGarlandOn) {
-                        igniteGarland();
-                        showSpeechBubble("✨ Ялиночка запалилася!");
-                    } else {
-                        extinguishGarland();
-                        showSpeechBubble("💤 Ялиночка згасла!");
-                    }
-                }
-            } else if (e.key === 'я' || e.key === 'Я') {
-                if (!isGarlandOn && !lightsBtn.disabled) {
+            if (e.key === ' ' && !lightsBtn.disabled) {
+                if (!isGarlandOn) {
                     igniteGarland();
                     showSpeechBubble("✨ Ялиночка запалилася!");
+                } else {
+                    extinguishGarland();
+                    showSpeechBubble("💤 Ялиночка згасла!");
                 }
+            } else if ((e.key === 'я' || e.key === 'Я') && !isGarlandOn && !lightsBtn.disabled) {
+                igniteGarland();
+                showSpeechBubble("✨ Ялиночка запалилася!");
             }
         });
 
-        // Захист від "залипання"
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 stopSpeechRecognition();
                 stopGarland();
-            } else if (!isSpeechActive && document.visibilityState === 'visible') {
-                if (lightsBtn.disabled === false) {
-                    setTimeout(() => {
-                        startSpeechRecognition();
-                    }, 1000);
-                }
+            } else if (!isSpeechActive && document.visibilityState === 'visible' && !lightsBtn.disabled) {
+                setTimeout(startSpeechRecognition, 1000);
             }
         });
 
-        // Автоматичне вимкнення при закритті
         window.addEventListener('beforeunload', () => {
             stopSpeechRecognition();
             stopGarland();
         });
 
-        // Адаптивність
         function fixHeight() {
             document.body.style.height = window.innerHeight + 'px';
         }
         fixHeight();
         window.addEventListener('resize', fixHeight);
 
-        // Ініціалізація
         console.log('🚀 Ялиночка завантажена!');
-        
         setTimeout(() => {
             if (loader.style.display !== 'none') {
                 showSpeechBubble("📱 Наведи камеру на ялинку!");

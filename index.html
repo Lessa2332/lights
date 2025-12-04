@@ -2,654 +2,637 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Ялинка з гірляндою</title>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="AR ялинка з гірляндою">
+    <title>🎄 AR Ялинка з гірляндою</title>
+
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    
     <style>
-        * {
+        html, body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+            font-family: Arial, sans-serif;
+        }
+        
+        a-scene {
+            width: 100% !important;
+            height: 100% !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: transparent;
+        }
+
+        /* Лоадер */
+        .loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 71, 42, 0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffd700;
+            text-align: center;
+            padding: 20px;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a472a, #2d5a27);
-            color: white;
-            min-height: 100vh;
-            padding: 15px;
+        .loader h1 {
+            font-size: 1.8em;
+            margin: 0 0 20px 0;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        .loader p {
+            font-size: 1.2em;
+            margin: 10px 0;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+            font-size: 3em;
+        }
+
+        /* Кнопки управління */
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 90%;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 215, 0, 0.9);
+            color: #1a472a;
+            font-size: 0.9em;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            min-width: 140px;
             backdrop-filter: blur(10px);
         }
 
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #ffd700;
-        }
-
-        .ar-container {
-            width: 100%;
-            height: 50vh;
-            min-height: 300px;
-            margin: 0 auto 20px;
-            border: 3px solid #ffd700;
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-            background: #000;
-        }
-
-        #ar-scene {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            background: #2d5a27;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border: 2px solid #ffd700;
-        }
-
-        .btn:hover {
-            background: #3a7c32;
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.95);
             transform: translateY(-2px);
         }
 
-        .btn:active {
+        .control-btn:active {
             transform: translateY(0);
         }
 
-        .btn.active {
+        .control-btn.active {
             background: #4CAF50;
             color: white;
         }
 
-        .status {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
+        .control-btn.off {
+            background: #f44336;
+            color: white;
         }
 
-        .status p {
-            margin: 5px 0;
-        }
-
-        .instructions {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .instructions h3 {
-            color: #ffd700;
-            margin-bottom: 10px;
-        }
-
-        .instructions ol {
-            padding-left: 20px;
-        }
-
-        .instructions li {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-
-        .marker-section {
+        /* Інструкції */
+        .hint {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 20px;
             text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            max-width: 80%;
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffd700;
+            display: none;
         }
 
-        .marker-section h3 {
+        .hint h3 {
+            margin: 0 0 10px 0;
             color: #ffd700;
-            margin-bottom: 10px;
         }
 
-        #markerPreview {
-            max-width: 250px;
-            border-radius: 10px;
-            border: 3px solid #ffd700;
-            margin: 10px auto;
-            display: block;
+        .hint p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        /* Статус */
+        .status {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+            display: none;
+            border: 1px solid #ffd700;
         }
 
         /* Адаптивність */
         @media (max-width: 768px) {
             .controls {
-                grid-template-columns: 1fr;
+                bottom: 10px;
+                gap: 8px;
             }
             
-            .ar-container {
-                height: 40vh;
+            .control-btn {
+                padding: 10px 15px;
+                font-size: 0.8em;
+                min-width: 120px;
             }
             
-            .header h1 {
-                font-size: 24px;
+            .hint {
+                top: 10px;
+                padding: 10px 15px;
+            }
+            
+            .status {
+                top: 70px;
+                padding: 8px 15px;
+            }
+            
+            .loader h1 {
+                font-size: 1.5em;
+            }
+            
+            .loader p {
+                font-size: 1em;
             }
         }
 
         @media (max-width: 480px) {
-            .btn {
-                padding: 12px;
-                font-size: 14px;
+            .controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
             }
             
-            .ar-container {
-                height: 35vh;
-                min-height: 250px;
+            .control-btn {
+                width: 90%;
+                max-width: 250px;
+                min-width: auto;
             }
         }
-
-        /* Стилі для повідомлень */
-        .message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px;
-            background: #4CAF50;
-            color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-three.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎄 AR Ялинка з гірляндою</h1>
-            <p>Наведіть камеру на маркер та скажіть "Ялиночка гори!"</p>
-        </div>
-        
-        <div class="ar-container">
-            <canvas id="ar-scene"></canvas>
-        </div>
-        
-        <div class="controls">
-            <button id="start-button" class="btn">🚀 Старт AR</button>
-            <button id="music-toggle" class="btn">🎵 Увімк. музику</button>
-            <button id="mic-toggle" class="btn">🎤 Увімк. мікрофон</button>
-            <button id="trigger-lights" class="btn">✨ Ялиночка гори!</button>
-        </div>
-        
-        <div class="status">
-            <p id="mic-status">🎤 Мікрофон: вимкнено</p>
-            <p id="ar-status">📱 AR: не активний</p>
-            <p id="music-status">🎵 Музика: вимкнено</p>
-        </div>
-        
-        <div class="instructions">
-            <h3>📋 Як користуватися:</h3>
-            <ol>
-                <li>Натисніть "Старт AR" та дозвольте доступ до камери</li>
-                <li>Наведіть камеру на маркер (зображення нижче)</li>
-                <li>Увімкніть мікрофон та скажіть "Ялиночка гори!"</li>
-                <li>Або просто натисніть кнопку "Ялиночка гори!"</li>
-                <li>Насолоджуйтесь анімацією вогників!</li>
-            </ol>
-        </div>
+    <!-- Лоадер -->
+    <div class="loader" id="loader">
+        <div class="pulse">🎄</div>
+        <h1>AR Ялинка з гірляндою</h1>
+        <p>Наведіть камеру на маркер з ялинкою</p>
+        <p>Маркер має бути формату А5</p>
+    </div>
+    
+    <!-- Підказка -->
+    <div class="hint" id="hint">
+        <h3>🎤 Скажіть:</h3>
+        <p>"Ялиночка світись!" або "Ялиночка гори!"</p>
+        <p>Або натисніть кнопку "Запалити!"</p>
+    </div>
+    
+    <!-- Статус -->
+    <div class="status" id="status">
+        <p id="status-text">Готовий до запалювання...</p>
+    </div>
 
-        <div class="marker-section">
-            <h3>🎯 Маркер для AR:</h3>
-            <p>Наведіть камеру на це зображення:</p>
-            <img id="markerPreview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMDA0NDExIi8+CjxwYXRoIGQ9Ik0xMDAgMjVMMTQwIDc1TDE2MCA1NUwxMDAgMTVMMzAgODVMMzUgOTBMMTAwIDI1WiIgZmlsbD0iI0ZGREYwMCIvPgo8cGF0aCBkPSJNNzAgMTEwTDEwMCAxMzBMMTMwIDExMEwxMDAgOTBMNzAgMTEwWiIgZmlsbD0iI0ZGREYwMCIvPgo8cGF0aCBkPSJNNzAgMTQwTDEwMCAxNjBMMTMwIDE0MEwxMDAgMTIwTDcwIDE0MFoiIGZpbGw9IiNGRkRGMDAiLz4KPHBhdGggZD0iTTQ1IDE2MEw4NSAxODBMMTA1IDE2MEw0NSAxMTBMNDUgMTYwWiIgZmlsbD0iI0ZGREYwMCIvPgo8cGF0aCBkPSJNMTU1IDE2MEwxOTUgMTgwTDE3NSAxNjBMMTU1IDE0MEwxNTUgMTYwWiIgZmlsbD0iI0ZGREYwMCIvPgo8L3N2Zz4K" alt="Маркер ялинки">
-            <p><small>Скачайте та роздрукуйте це зображення або відкрийте на іншому пристрої</small></p>
-        </div>
+    <!-- A-Frame сцена -->
+    <a-scene
+        mindar-image="imageTargetSrc: marcher.mind;"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+        loading-screen="enabled: false"
+        embedded
+        renderer="colorManagement: true; physicallyCorrectLights: true;"
+    >
+        <a-assets>
+            <audio id="bg-music" src="music.mp3" preload="auto" loop></audio>
+        </a-assets>
+
+        <a-camera
+            position="0 0 1.5"
+            look-controls="enabled: true"
+        ></a-camera>
+
+        <a-entity mindar-image-target="targetIndex: 0">
+            <!-- Ялинка з 7 кульками -->
+            <a-entity id="tree" position="0 0 -0.5" scale="0.5 0.5 0.5" visible="false">
+                <!-- Основа ялинки (трикутник) -->
+                <a-triangle
+                    id="tree-body"
+                    position="0 0 0"
+                    height="1.2"
+                    width="1"
+                    color="#006400"
+                    rotation="-90 0 0"
+                ></a-triangle>
+                
+                <!-- Ствол -->
+                <a-box
+                    position="0 -0.6 0"
+                    width="0.1"
+                    height="0.2"
+                    depth="0.1"
+                    color="#8B4513"
+                ></a-box>
+                
+                <!-- 7 кульок-вогників у формі трикутника -->
+                <a-sphere id="light1" position="0 0.8 0" radius="0.04" color="#333333" emissive="#333333" emissive-intensity="0.1"></a-sphere>
+                <a-sphere id="light2" position="-0.2 0.5 0" radius="0.04" color="#333333" emissive="#333333" emissive-intensity="0.1"></a-sphere>
+                <a-sphere id="light3" position="0.2 0.5 0" radius="0.04" color="#333333" emissive="#333333" emissive-intensity="0.1"></a-sphere>
+                <a-sphere id="light4" position="-0.3 0.2 0" radius="0.04" color="#333333" emissive="#333333" emissive-intensity="0.1"></a-sphere>
+                <a-sphere id="light5" position="0.3 0.2 0" radius="0.04" color="#333333" emissive="#333333" emissive-intensity="0.1"></a-sphere>
+                <a-sphere id="light6" position="-0.15 -0.1 0" radius="0.04" color="#333333" emissive="#333333" emissive-intensity="0.1"></a-sphere>
+                <a-sphere id="light7" position="0.15 -0.1 0" radius="0.04" color="#333333" emissive="#333333" emissive-intensity="0.1"></a-sphere>
+                
+                <!-- Світло від гірлянди -->
+                <a-light id="garland-light" type="point" color="#FFD700" intensity="0" distance="3" position="0 0.3 0" visible="true"></a-light>
+            </a-entity>
+        </a-entity>
+    </a-scene>
+
+    <!-- Кнопки управління -->
+    <div class="controls">
+        <button id="music-btn" class="control-btn">🎵 Музика</button>
+        <button id="mic-btn" class="control-btn">🎤 Мікрофон</button>
+        <button id="lights-btn" class="control-btn">✨ Запалити!</button>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Елементи управління
-            const startButton = document.getElementById('start-button');
-            const musicToggle = document.getElementById('music-toggle');
-            const micToggle = document.getElementById('mic-toggle');
-            const triggerLights = document.getElementById('trigger-lights');
-            const micStatus = document.getElementById('mic-status');
-            const arStatus = document.getElementById('ar-status');
-            const musicStatus = document.getElementById('music-status');
-            
-            let arStarted = false;
-            let isMusicPlaying = false;
-            let isMicActive = false;
-            let recognition;
-            let mindarThree;
-            let scene;
-            let garlandLights = [];
-            
-            // Аудіо елемент для музики
-            const backgroundMusic = new Audio();
-            
-            // Список можливих форматів музики (вибери той, який у тебе є)
-            const musicFormats = [
-                'music.mp3',           // MP3 файл
-                'music.ogg',           // OGG файл
-                'music.wav',           // WAV файл
-                'background.mp3',      // Інші можливі назви
-                'bgmusic.mp3',
-                'melody.mp3',
-                'christmas.mp3'
-            ];
-            
-            // Функція для завантаження музики
-            async function loadMusic() {
-                for (const format of musicFormats) {
-                    try {
-                        // Спробуємо завантажити кожен формат
-                        backgroundMusic.src = format;
-                        backgroundMusic.load();
-                        
-                        // Перевірка, чи може браузер відтворити цей формат
-                        const canPlay = await new Promise((resolve) => {
-                            const checkPlay = () => {
-                                const canPlay = backgroundMusic.canPlayType('audio/mpeg') || 
-                                               backgroundMusic.canPlayType('audio/ogg') || 
-                                               backgroundMusic.canPlayType('audio/wav');
-                                resolve(canPlay);
-                            };
-                            backgroundMusic.addEventListener('canplaythrough', checkPlay);
-                            backgroundMusic.addEventListener('error', () => resolve(false));
-                            
-                            // Таймаут для перевірки
-                            setTimeout(() => resolve(false), 2000);
-                        });
-                        
-                        if (canPlay) {
-                            console.log(`Музика завантажена: ${format}`);
-                            showMessage(`Музика завантажена: ${format}`);
-                            backgroundMusic.loop = true;
-                            backgroundMusic.volume = 0.5;
-                            return true;
-                        }
-                    } catch (error) {
-                        console.log(`Не вдалося завантажити ${format}:`, error);
-                        continue;
-                    }
+        // Посилання на елементи
+        const loader = document.getElementById('loader');
+        const hint = document.getElementById('hint');
+        const status = document.getElementById('status');
+        const statusText = document.getElementById('status-text');
+        const targetEntity = document.querySelector('[mindar-image-target]');
+        const tree = document.getElementById('tree');
+        const musicBtn = document.getElementById('music-btn');
+        const micBtn = document.getElementById('mic-btn');
+        const lightsBtn = document.getElementById('lights-btn');
+        const bgMusic = document.getElementById('bg-music');
+        const garlandLight = document.getElementById('garland-light');
+        
+        // Масив з 7 кульками
+        const lights = [
+            document.getElementById('light1'),
+            document.getElementById('light2'),
+            document.getElementById('light3'),
+            document.getElementById('light4'),
+            document.getElementById('light5'),
+            document.getElementById('light6'),
+            document.getElementById('light7')
+        ];
+        
+        // Змінні стану
+        let isMusicPlaying = false;
+        let isMicActive = false;
+        let isGarlandOn = false;
+        let audioContext, analyser, dataArray, micStream;
+        let activationPhrases = ['ялиночка світись', 'ялиночка гори', 'запали ялинку', 'увімкни вогні'];
+        
+        // Перевірка всіх елементів
+        console.log('Елементи перевірено:');
+        console.log('Tree:', tree);
+        console.log('Lights found:', lights.filter(l => l).length);
+        console.log('Music:', bgMusic);
+
+        // Логіка відстеження маркера
+        if (targetEntity) {
+            targetEntity.addEventListener('targetFound', () => {
+                console.log("🎯 Маркер знайдено! Ялинка з'являється.");
+                loader.style.display = 'none';
+                if (tree) {
+                    tree.setAttribute('visible', 'true');
                 }
-                
-                // Якщо жоден файл не знайдено
-                console.warn('Не знайдено жодного файлу музики');
-                showMessage('Файл музики не знайдено. Додайте music.mp3 в папку проєкту.');
-                musicToggle.disabled = true;
-                musicToggle.textContent = '🎵 Немає музики';
-                musicToggle.style.background = '#757575';
-                return false;
-            }
-            
-            // Функція для показу повідомлень
-            function showMessage(text, duration = 3000) {
-                const message = document.createElement('div');
-                message.className = 'message';
-                message.textContent = text;
-                document.body.appendChild(message);
-                
-                setTimeout(() => {
-                    message.style.opacity = '0';
-                    setTimeout(() => message.remove(), 300);
-                }, duration);
-            }
-            
-            // Ініціалізація MindAR
-            async function initAR() {
-                try {
-                    const mindarThree = new MindARThree({
-                        container: document.getElementById('ar-scene'),
-                        imageTargetSrc: 'marcher.mind',
-                        uiScanning: false,
-                        uiLoading: true,
-                        filterMinCF: 0.001,
-                        filterBeta: 0.01,
-                    });
-                    
-                    const { renderer, scene: threeScene, camera } = mindarThree;
-                    
-                    // Налаштування рендерера
-                    renderer.setPixelRatio(window.devicePixelRatio);
-                    renderer.setSize(document.getElementById('ar-scene').offsetWidth, 
-                                    document.getElementById('ar-scene').offsetHeight);
-                    
-                    // Додаємо світло
-                    const light = new THREE.DirectionalLight(0xffffff, 1);
-                    light.position.set(0, 0, 1);
-                    threeScene.add(light);
-                    
-                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-                    threeScene.add(ambientLight);
-                    
-                    // Створюємо гірлянду (примітиви у формі трикутника)
-                    createGarland(threeScene);
-                    
-                    // Старт AR
-                    await mindarThree.start();
-                    
-                    // Оновлюємо статус
-                    arStatus.textContent = '📱 AR: активний';
-                    arStatus.style.color = '#4CAF50';
-                    
-                    // Анімація
-                    mindarThree.update();
-                    renderer.setAnimationLoop(() => {
-                        renderer.render(threeScene, camera);
-                    });
-                    
-                    return { mindarThree, scene: threeScene };
-                } catch (error) {
-                    console.error('Помилка ініціалізації AR:', error);
-                    arStatus.textContent = '📱 AR: помилка';
-                    arStatus.style.color = '#f44336';
-                    showMessage('Помилка AR. Перевірте доступ до камери та файл marcher.mind');
-                    return null;
+                // Автоматично показуємо підказку
+                hint.style.display = 'block';
+                status.style.display = 'block';
+                statusText.textContent = 'Скажіть: "Ялиночка світись!"';
+            });
+
+            targetEntity.addEventListener('targetLost', () => {
+                console.log("ℹ️ Маркер втрачено.");
+                if (tree) {
+                    tree.setAttribute('visible', 'false');
                 }
-            }
+                // Вимикаємо все при втраті маркера
+                turnOffGarland();
+                if (bgMusic && !bgMusic.paused) bgMusic.pause();
+                if (micStream) {
+                    micStream.getTracks().forEach(track => track.stop());
+                    micStream = null;
+                }
+                if (audioContext) audioContext.close();
+                
+                // Оновлюємо UI
+                loader.style.display = 'flex';
+                hint.style.display = 'none';
+                status.style.display = 'none';
+                musicBtn.textContent = '🎵 Музика';
+                musicBtn.classList.remove('active', 'off');
+                micBtn.textContent = '🎤 Мікрофон';
+                micBtn.classList.remove('active', 'off');
+                lightsBtn.textContent = '✨ Запалити!';
+                lightsBtn.classList.remove('active');
+                
+                // Скидаємо стани
+                isMusicPlaying = false;
+                isMicActive = false;
+                isGarlandOn = false;
+            });
+        } else {
+            console.error('Елемент mindar-image-target не знайдено!');
+        }
+
+        // Функція запалювання гірлянди
+        function turnOnGarland() {
+            if (isGarlandOn) return;
             
-            // Створення гірлянди
-            function createGarland(scene) {
-                const garlandGeometry = new THREE.SphereGeometry(0.02, 8, 8);
-                const garlandMaterial = new THREE.MeshBasicMaterial({ 
-                    color: 0x333300,
-                    transparent: true,
-                    opacity: 0.8
+            console.log('✨ Запалюємо гірлянду!');
+            isGarlandOn = true;
+            lightsBtn.textContent = '💫 Горить!';
+            lightsBtn.classList.add('active');
+            
+            // Увімкнути світло
+            garlandLight.setAttribute('intensity', '2');
+            
+            // Анімація кожного вогника
+            lights.forEach((light, index) => {
+                if (!light) return;
+                
+                // Запалюємо вогонь
+                light.setAttribute('color', '#FFFF00');
+                light.setAttribute('emissive', '#FFFF00');
+                light.setAttribute('emissive-intensity', '2');
+                
+                // Додаємо анімацію мерехтіння
+                const animation = document.createElement('a-animation');
+                animation.setAttribute('attribute', 'emissive-intensity');
+                animation.setAttribute('from', '0.5');
+                animation.setAttribute('to', '3');
+                animation.setAttribute('dur', '300');
+                animation.setAttribute('direction', 'alternate');
+                animation.setAttribute('repeat', 'indefinite');
+                animation.setAttribute('begin', index * 100 + 'ms');
+                light.appendChild(animation);
+                
+                // Додаємо анімацію кольору
+                const colorAnimation = document.createElement('a-animation');
+                colorAnimation.setAttribute('attribute', 'color');
+                colorAnimation.setAttribute('from', '#FFFF00');
+                colorAnimation.setAttribute('to', '#FF4500');
+                colorAnimation.setAttribute('dur', '500');
+                colorAnimation.setAttribute('direction', 'alternate');
+                colorAnimation.setAttribute('repeat', 'indefinite');
+                colorAnimation.setAttribute('begin', index * 150 + 'ms');
+                light.appendChild(colorAnimation);
+            });
+            
+            // Оновлюємо статус
+            statusText.textContent = '✨ Ялинка світиться!';
+            status.style.display = 'block';
+            
+            // Автоматично вимкнути через 10 секунд
+            setTimeout(() => {
+                if (isGarlandOn) {
+                    turnOffGarland();
+                    statusText.textContent = 'Гірлянда вимкнулась. Скажіть ще раз!';
+                }
+            }, 10000);
+        }
+
+        // Функція вимкнення гірлянди
+        function turnOffGarland() {
+            if (!isGarlandOn) return;
+            
+            console.log('💡 Вимкнути гірлянду');
+            isGarlandOn = false;
+            lightsBtn.textContent = '✨ Запалити!';
+            lightsBtn.classList.remove('active');
+            
+            // Вимикаємо світло
+            garlandLight.setAttribute('intensity', '0');
+            
+            // Вимикаємо всі вогники
+            lights.forEach(light => {
+                if (!light) return;
+                light.setAttribute('color', '#333333');
+                light.setAttribute('emissive', '#333333');
+                light.setAttribute('emissive-intensity', '0.1');
+                
+                // Видаляємо всі анімації
+                const animations = light.querySelectorAll('a-animation');
+                animations.forEach(anim => anim.remove());
+            });
+            
+            statusText.textContent = 'Готовий до запалювання...';
+        }
+
+        // Функція для ініціалізації мікрофона
+        async function initMic() {
+            try {
+                micStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                    } 
                 });
                 
-                // Створюємо вогники у формі трикутника (ялинка)
-                const trianglePoints = [
-                    // Верхній ряд
-                    { x: 0, y: 0.4, z: 0 },
-                    // Середній ряд
-                    { x: -0.15, y: 0.25, z: 0 },
-                    { x: 0, y: 0.25, z: 0 },
-                    { x: 0.15, y: 0.25, z: 0 },
-                    // Нижній ряд
-                    { x: -0.25, y: 0.1, z: 0 },
-                    { x: -0.1, y: 0.1, z: 0 },
-                    { x: 0.1, y: 0.1, z: 0 },
-                    { x: 0.25, y: 0.1, z: 0 },
-                    // Найнижчий ряд
-                    { x: -0.3, y: -0.05, z: 0 },
-                    { x: -0.15, y: -0.05, z: 0 },
-                    { x: 0, y: -0.05, z: 0 },
-                    { x: 0.15, y: -0.05, z: 0 },
-                    { x: 0.3, y: -0.05, z: 0 },
-                    // Основа
-                    { x: 0, y: -0.2, z: 0 }
-                ];
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(micStream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                analyser.smoothingTimeConstant = 0.3;
+                source.connect(analyser);
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
                 
-                trianglePoints.forEach((point, index) => {
-                    const light = new THREE.Mesh(garlandGeometry, garlandMaterial.clone());
-                    light.position.set(point.x, point.y, point.z);
-                    scene.add(light);
-                    garlandLights.push({
-                        mesh: light,
-                        material: light.material,
-                        originalColor: 0x333300,
-                        activeColor: 0xffff00,
-                        isActive: false
-                    });
-                });
+                // Оновлюємо UI
+                micBtn.textContent = '🎤 Слухаємо...';
+                micBtn.classList.add('active');
+                isMicActive = true;
+                
+                // Показуємо підказку
+                hint.style.display = 'block';
+                statusText.textContent = 'Скажіть: "Ялиночка світись!"';
+                status.style.display = 'block';
+                
+                // Починаємо обробку аудіо
+                processAudio();
+                
+            } catch (err) {
+                console.error('Помилка мікрофона:', err);
+                micBtn.textContent = '🎤 Помилка';
+                micBtn.classList.add('off');
+                statusText.textContent = 'Помилка мікрофона';
+                hint.style.display = 'block';
             }
+        }
+
+        // Функція обробки аудіо для розпізнавання слів
+        function processAudio() {
+            if (!analyser || !isMicActive) return;
             
-            // Анімація вогників
-            function animateLights() {
-                if (garlandLights.length === 0) return;
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Проста перевірка гучності
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+            }
+            const avgVolume = sum / dataArray.length;
+            
+            // Якщо гучність достатня (хтось щось сказав)
+            if (avgVolume > 30) {
+                console.log('Гучність:', avgVolume);
                 
-                garlandLights.forEach((lightObj, index) => {
+                // Просте розпізнавання по гучності
+                if (!isGarlandOn) {
+                    console.log('Розпізнано голос! Запалюємо...');
+                    turnOnGarland();
+                    
+                    // Візуальна підтвердження
+                    statusText.textContent = '🎤 Розпізнано голос!';
                     setTimeout(() => {
-                        lightObj.isActive = true;
-                        lightObj.material.color.setHex(lightObj.activeColor);
-                        lightObj.material.opacity = 1;
-                        
-                        // Ефект мерехтіння
-                        const interval = setInterval(() => {
-                            if (lightObj.isActive) {
-                                const intensity = 0.7 + Math.random() * 0.3;
-                                const flickerColor = Math.floor(lightObj.activeColor * intensity);
-                                lightObj.material.color.setHex(flickerColor);
-                                lightObj.material.opacity = 0.7 + Math.random() * 0.3;
-                            } else {
-                                clearInterval(interval);
-                            }
-                        }, 100);
-                        
-                        // Вимикаємо через 5 секунд
-                        setTimeout(() => {
-                            lightObj.isActive = false;
-                            lightObj.material.color.setHex(lightObj.originalColor);
-                            lightObj.material.opacity = 0.8;
-                            clearInterval(interval);
-                        }, 5000);
-                    }, index * 150);
-                });
-            }
-            
-            // Голосове керування
-            function initVoiceRecognition() {
-                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                    recognition = new SpeechRecognition();
-                    recognition.continuous = true;
-                    recognition.interimResults = false;
-                    recognition.lang = 'uk-UA';
-                    
-                    recognition.onresult = (event) => {
-                        const transcript = event.results[event.results.length - 1][0].transcript;
-                        console.log('Розпізнано:', transcript);
-                        
-                        if (transcript.toLowerCase().includes('ялиночка гори')) {
-                            showMessage('Розпізнано: "Ялиночка гори!"');
-                            animateLights();
+                        if (isGarlandOn) {
+                            statusText.textContent = '✨ Ялинка світиться!';
                         }
-                    };
-                    
-                    recognition.onerror = (event) => {
-                        console.error('Помилка розпізнавання:', event.error);
-                        micStatus.textContent = '🎤 Мікрофон: помилка';
-                        micStatus.style.color = '#f44336';
-                        showMessage('Помилка мікрофона');
-                    };
-                    
-                    recognition.onend = () => {
-                        if (isMicActive) {
-                            setTimeout(() => recognition.start(), 100);
-                        }
-                    };
-                } else {
-                    console.warn('Web Speech API не підтримується');
-                    micToggle.disabled = true;
-                    micToggle.textContent = '🎤 Не підтримується';
-                    micToggle.style.background = '#757575';
-                    micStatus.textContent = '🎤 Мікрофон: не підтримується';
+                    }, 1000);
                 }
             }
             
-            // Обробники подій
-            startButton.addEventListener('click', async () => {
-                if (!arStarted) {
-                    startButton.disabled = true;
-                    startButton.textContent = '🔄 Завантаження...';
-                    
-                    const ar = await initAR();
-                    if (ar) {
-                        mindarThree = ar.mindarThree;
-                        scene = ar.scene;
-                        arStarted = true;
-                        startButton.textContent = '⏹️ Стоп AR';
-                        startButton.style.background = '#f44336';
-                        startButton.classList.add('active');
-                    } else {
-                        startButton.textContent = '🚀 Старт AR';
-                    }
-                    startButton.disabled = false;
-                } else {
-                    if (mindarThree) {
-                        mindarThree.stop();
-                    }
-                    arStarted = false;
-                    startButton.textContent = '🚀 Старт AR';
-                    startButton.style.background = '#2d5a27';
-                    startButton.classList.remove('active');
-                    arStatus.textContent = '📱 AR: не активний';
-                    arStatus.style.color = 'white';
-                }
-            });
-            
-            musicToggle.addEventListener('click', () => {
-                if (isMusicPlaying) {
-                    backgroundMusic.pause();
-                    musicToggle.textContent = '🎵 Увімк. музику';
-                    musicToggle.style.background = '#2d5a27';
-                    musicToggle.classList.remove('active');
-                    musicStatus.textContent = '🎵 Музика: вимкнено';
-                    isMusicPlaying = false;
-                } else {
-                    // Перевіряємо, чи завантажена музика
-                    if (!backgroundMusic.src || backgroundMusic.error) {
-                        showMessage('Завантаження музики...');
-                        loadMusic().then(success => {
-                            if (success) {
-                                playMusic();
-                            }
-                        });
-                    } else {
-                        playMusic();
-                    }
-                }
-                
-                function playMusic() {
-                    backgroundMusic.play()
-                        .then(() => {
-                            musicToggle.textContent = '🔇 Вимк. музику';
-                            musicToggle.style.background = '#4CAF50';
-                            musicToggle.classList.add('active');
-                            musicStatus.textContent = '🎵 Музика: грає';
-                            musicStatus.style.color = '#4CAF50';
-                            isMusicPlaying = true;
-                            showMessage('Музика увімкнена');
-                        })
-                        .catch(error => {
-                            console.error('Помилка відтворення музики:', error);
-                            showMessage('Помилка відтворення музики. Натисніть ще раз.');
-                            musicToggle.textContent = '🎵 Помилка';
-                            musicToggle.style.background = '#f44336';
-                        });
-                }
-            });
-            
-            micToggle.addEventListener('click', () => {
-                if (!recognition) {
-                    initVoiceRecognition();
-                }
-                
-                if (isMicActive) {
-                    recognition.stop();
-                    micStatus.textContent = '🎤 Мікрофон: вимкнено';
-                    micStatus.style.color = 'white';
-                    micToggle.textContent = '🎤 Увімк. мікрофон';
-                    micToggle.style.background = '#2d5a27';
-                    micToggle.classList.remove('active');
-                } else {
-                    try {
-                        recognition.start();
-                        micStatus.textContent = '🎤 Мікрофон: активний';
-                        micStatus.style.color = '#4CAF50';
-                        micToggle.textContent = '🎤 Вимк. мікрофон';
-                        micToggle.style.background = '#f44336';
-                        micToggle.classList.add('active');
-                        showMessage('Мікрофон активовано');
-                    } catch (error) {
-                        console.error('Помилка мікрофона:', error);
-                        micStatus.textContent = '🎤 Мікрофон: помилка';
-                        micStatus.style.color = '#f44336';
-                        showMessage('Помилка доступу до мікрофона');
-                    }
-                }
-                isMicActive = !isMicActive;
-            });
-            
-            triggerLights.addEventListener('click', () => {
-                if (arStarted) {
-                    animateLights();
-                    triggerLights.style.background = '#FF9800';
-                    triggerLights.classList.add('active');
-                    showMessage('Ялиночка гори! ✨');
-                    
-                    setTimeout(() => {
-                        triggerLights.style.background = '#2d5a27';
-                        triggerLights.classList.remove('active');
-                    }, 500);
-                } else {
-                    showMessage('Спочатку запустіть AR!', 2000);
-                }
-            });
-            
-            // Автоматичне вимкнення при закритті
-            window.addEventListener('beforeunload', () => {
-                if (recognition && isMicActive) {
-                    recognition.stop();
-                }
-                if (mindarThree) {
-                    mindarThree.stop();
-                }
-                if (backgroundMusic) {
-                    backgroundMusic.pause();
-                }
-            });
-            
-            // Адаптація розміру AR контейнера
-            window.addEventListener('resize', () => {
-                if (mindarThree && mindarThree.renderer) {
-                    const container = document.getElementById('ar-scene');
-                    mindarThree.renderer.setSize(container.offsetWidth, container.offsetHeight);
-                }
-            });
-            
-            // Завантаження музики при старті
-            loadMusic();
-            
-            // Ініціалізація голосового розпізнавання
-            initVoiceRecognition();
+            // Продовжуємо обробку
+            requestAnimationFrame(processAudio);
+        }
+
+        // Обробник кнопки музики
+        musicBtn.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play()
+                    .then(() => {
+                        musicBtn.textContent = '🔇 Музика';
+                        musicBtn.classList.add('active');
+                        isMusicPlaying = true;
+                    })
+                    .catch(e => {
+                        console.log("🔇 Помилка музики:", e);
+                        musicBtn.textContent = '🎵 Помилка';
+                        musicBtn.classList.add('off');
+                    });
+            } else {
+                bgMusic.pause();
+                musicBtn.textContent = '🎵 Музика';
+                musicBtn.classList.remove('active');
+                isMusicPlaying = false;
+            }
         });
+
+        // Обробник кнопки мікрофона
+        micBtn.addEventListener('click', () => {
+            if (!isMicActive) {
+                initMic();
+            } else {
+                // Вимикаємо мікрофон
+                if (micStream) {
+                    micStream.getTracks().forEach(track => track.stop());
+                }
+                if (audioContext) audioContext.close();
+                analyser = null;
+                micStream = null;
+                
+                // Оновлюємо UI
+                micBtn.textContent = '🎤 Мікрофон';
+                micBtn.classList.remove('active');
+                isMicActive = false;
+                
+                // Ховаємо підказку, якщо гірлянда не горить
+                if (!isGarlandOn) {
+                    hint.style.display = 'none';
+                    status.style.display = 'none';
+                }
+            }
+        });
+
+        // Обробник кнопки запалювання
+        lightsBtn.addEventListener('click', () => {
+            if (!isGarlandOn) {
+                turnOnGarland();
+            } else {
+                turnOffGarland();
+            }
+        });
+
+        // Автоматичне вимкнення при закритті
+        window.addEventListener('beforeunload', () => {
+            if (micStream) {
+                micStream.getTracks().forEach(track => track.stop());
+            }
+            if (audioContext) audioContext.close();
+            if (bgMusic) bgMusic.pause();
+        });
+
+        // Початкова перевірка музики
+        bgMusic.addEventListener('canplay', () => {
+            console.log('Музика готова до відтворення');
+        });
+
+        bgMusic.addEventListener('error', (e) => {
+            console.error('Помилка завантаження музики:', e);
+            musicBtn.textContent = '🎵 Немає музики';
+            musicBtn.classList.add('off');
+            musicBtn.disabled = true;
+        });
+
+        // Додаємо голосове управління через події
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ') { // Пробіл
+                if (!isGarlandOn) {
+                    turnOnGarland();
+                }
+            }
+        });
+
+        // Адаптивність висоти
+        function fixHeight() {
+            document.body.style.height = window.innerHeight + 'px';
+        }
+        fixHeight();
+        window.addEventListener('resize', fixHeight);
     </script>
 </body>
 </html>

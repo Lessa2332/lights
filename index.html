@@ -2,350 +2,654 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Передай лист Санті</title>
-    
-    <!-- ПЕРЕНЕСЕНО SCRIPTS В HEAD -->
-    <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Ялинка з гірляндою</title>
     <style>
-        body {
+        * {
             margin: 0;
-            overflow: hidden;
-            background: #0a1e3a;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a472a, #2d5a27);
             color: white;
-            font-family: sans-serif;
+            min-height: 100vh;
+            padding: 15px;
         }
-        .hidden { display: none !important; }
-       
-        #startScreen {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, #0f3443, #1e5a7e);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
             text-align: center;
-            padding: 20px;
-            z-index: 100;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
         }
-        h1 {
-            font-size: 2.8em;
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
             color: #ffd700;
-            text-shadow: 0 0 20px gold;
+        }
+
+        .ar-container {
+            width: 100%;
+            height: 50vh;
+            min-height: 300px;
+            margin: 0 auto 20px;
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+        }
+
+        #ar-scene {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             margin-bottom: 20px;
         }
-       
-        button {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 18px 50px;
-            font-size: 1.6em;
-            border-radius: 50px;
-            margin-top: 30px;
-            box-shadow: 0 10px 30px rgba(231,76,60,.6);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        button:active { transform: scale(0.95); }
-       
-        #arContainer { position: fixed; inset: 0; }
-       
-        #hint {
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #000000cc;
-            padding: 12px 30px;
-            border-radius: 20px;
-            font-size: 1.7em;
-            z-index: 10;
-            pointer-events: none;
-            text-align: center;
-            width: auto;
-            max-width: 90%;
-            padding-bottom: 20px;
-        }
-        #sendBtn {
-            position: absolute;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 20px 60px;
-            font-size: 2em;
-            background: #27ae60;
-            border-radius: 50px;
-            z-index: 20;
-            display: none;
-        }
-       
-        #elfIdle, #elfMagic {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 85vw;
-            max-width: 400px;
-            height: auto;
-            max-height: 75vh;
-            background-size: 100% auto;
-            background-repeat: no-repeat;
-            background-position: center bottom;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 1.3s ease;
-            z-index: 5;
-        }
-        #elfMagic { z-index: 6; }
-       
-        .loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.5em;
-            z-index: 999;
-        }
-    </style>
-</head>
-<body>
-<div id="startScreen">
-    <h1>Передай лист Санті</h1>
-    <p>Напиши бажання на папері — і віддай його ельфу!</p>
-    <button id="startBtn">Почати</button>
-</div>
-<div id="arContainer" class="hidden">
-    <div id="hint">Знайди дзвіночок!</div>
-    <button id="sendBtn">Відправити лист</button>
-    <div id="elfIdle"></div>
-    <div id="elfMagic"></div>
-</div>
-<div id="loading" class="loading hidden">Завантаження...</div>
 
-<script>
-    let audioEntity, magicSound, waitingSound;
-    let step = 0;
-    const hint = document.getElementById('hint');
-    const sendBtn = document.getElementById('sendBtn');
-    const elfIdle = document.getElementById('elfIdle');
-    const elfMagic = document.getElementById('elfMagic');
-    const loading = document.getElementById('loading');
-    
-    // Функція для перевірки наявності файлів
-    async function checkResource(url) {
-        try {
-            const response = await fetch(url, { method: 'HEAD' });
-            return response.ok;
-        } catch {
-            return false;
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #2d5a27;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 2px solid #ffd700;
         }
-    }
-    
-    document.getElementById('startBtn').addEventListener('click', async () => {
-        // Перевірка на HTTPS
-        if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-            alert('Цей додаток працює лише через HTTPS або localhost.');
-            return;
+
+        .btn:hover {
+            background: #3a7c32;
+            transform: translateY(-2px);
         }
-        
-        document.getElementById('startScreen').classList.add('hidden');
-        document.getElementById('arContainer').classList.remove('hidden');
-        loading.classList.remove('hidden');
-        
-        // Перевірка наявності критичних ресурсів
-        const requiredResources = [
-            'targets.mind',
-            'elf-idle.png',
-            'elf-magic.png',
-            'waiting.mp3',
-            'magic-sound.mp3'
-        ];
-        
-        for (const resource of requiredResources) {
-            const exists = await checkResource(resource);
-            if (!exists) {
-                alert(`Помилка: Файл ${resource} не знайдено! Переконайтесь, що всі файли завантажені в репозиторій.`);
-                location.reload();
-                return;
-            }
+
+        .btn:active {
+            transform: translateY(0);
         }
-        
-        try {
-            // Ініціалізація аудіо з обробкою помилок
-            try {
-                magicSound = new Audio('magic-sound.mp3');
-                magicSound.volume = 0.9;
-                
-                waitingSound = new Audio('waiting.mp3');
-                waitingSound.loop = true;
-                waitingSound.volume = 0.7;
-            } catch (e) {
-                console.warn('Не вдалося завантажити аудіофайли:', e);
+
+        .btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .status p {
+            margin: 5px 0;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .instructions h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .marker-section {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .marker-section h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        #markerPreview {
+            max-width: 250px;
+            border-radius: 10px;
+            border: 3px solid #ffd700;
+            margin: 10px auto;
+            display: block;
+        }
+
+        /* Адаптивність */
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
             }
             
-            // Створюємо A-Scene
-            const sceneEl = document.createElement('a-scene');
-            sceneEl.setAttribute('mindar-image', 'imageTargetSrc: targets.mind; uiLoading: no; uiScanning: no; maxTrack: 2;');
-            sceneEl.setAttribute('vr-mode-ui', 'enabled: false');
-            sceneEl.setAttribute('embedded', '');
-            sceneEl.setAttribute('renderer', 'colorManagement: false; sortObjects: true');
-            document.getElementById('arContainer').appendChild(sceneEl);
+            .ar-container {
+                height: 40vh;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
 
-            // Додаємо камеру
-            const camera = document.createElement('a-camera');
-            camera.setAttribute('position', '0 1.6 0');
-            sceneEl.appendChild(camera);
+        @media (max-width: 480px) {
+            .btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .ar-container {
+                height: 35vh;
+                min-height: 250px;
+            }
+        }
 
-            // Перший маркер — дзвіночок
-            const anchor1 = document.createElement('a-entity');
-            anchor1.setAttribute('mindar-image-target', 'targetIndex: 0');
-            sceneEl.appendChild(anchor1);
+        /* Стилі для повідомлень */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
 
-            // Другий маркер — зірочка
-            const anchor2 = document.createElement('a-entity');
-            anchor2.setAttribute('mindar-image-target', 'targetIndex: 1');
-            sceneEl.appendChild(anchor2);
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-three.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎄 AR Ялинка з гірляндою</h1>
+            <p>Наведіть камеру на маркер та скажіть "Ялиночка гори!"</p>
+        </div>
+        
+        <div class="ar-container">
+            <canvas id="ar-scene"></canvas>
+        </div>
+        
+        <div class="controls">
+            <button id="start-button" class="btn">🚀 Старт AR</button>
+            <button id="music-toggle" class="btn">🎵 Увімк. музику</button>
+            <button id="mic-toggle" class="btn">🎤 Увімк. мікрофон</button>
+            <button id="trigger-lights" class="btn">✨ Ялиночка гори!</button>
+        </div>
+        
+        <div class="status">
+            <p id="mic-status">🎤 Мікрофон: вимкнено</p>
+            <p id="ar-status">📱 AR: не активний</p>
+            <p id="music-status">🎵 Музика: вимкнено</p>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 Як користуватися:</h3>
+            <ol>
+                <li>Натисніть "Старт AR" та дозвольте доступ до камери</li>
+                <li>Наведіть камеру на маркер (зображення нижче)</li>
+                <li>Увімкніть мікрофон та скажіть "Ялиночка гори!"</li>
+                <li>Або просто натисніть кнопку "Ялиночка гори!"</li>
+                <li>Насолоджуйтесь анімацією вогників!</li>
+            </ol>
+        </div>
 
-            // Додаємо звукову підказку для A-Frame (не обов'язково)
-            audioEntity = document.createElement('a-entity');
-            audioEntity.setAttribute('position', '0 1 0');
-            audioEntity.setAttribute('sound', 'src: waiting.mp3; autoplay: false; loop: true; positional: true;');
-            anchor2.appendChild(audioEntity);
+        <div class="marker-section">
+            <h3>🎯 Маркер для AR:</h3>
+            <p>Наведіть камеру на це зображення:</p>
+            <img id="markerPreview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMDA0NDExIi8+CjxwYXRoIGQ9Ik0xMDAgMjVMMTQwIDc1TDE2MCA1NUwxMDAgMTVMMzAgODVMMzUgOTBMMTAwIDI1WiIgZmlsbD0iI0ZGREYwMCIvPgo8cGF0aCBkPSJNNzAgMTEwTDEwMCAxMzBMMTMwIDExMEwxMDAgOTBMNzAgMTEwWiIgZmlsbD0iI0ZGREYwMCIvPgo8cGF0aCBkPSJNNzAgMTQwTDEwMCAxNjBMMTMwIDE0MEwxMDAgMTIwTDcwIDE0MFoiIGZpbGw9IiNGRkRGMDAiLz4KPHBhdGggZD0iTTQ1IDE2MEw4NSAxODBMMTA1IDE2MEw0NSAxMTBMNDUgMTYwWiIgZmlsbD0iI0ZGREYwMCIvPgo8cGF0aCBkPSJNMTU1IDE2MEwxOTUgMTgwTDE3NSAxNjBMMTU1IDE0MEwxNTUgMTYwWiIgZmlsbD0iI0ZGREYwMCIvPgo8L3N2Zz4K" alt="Маркер ялинки">
+            <p><small>Скачайте та роздрукуйте це зображення або відкрийте на іншому пристрої</small></p>
+        </div>
+    </div>
 
-            anchor1.addEventListener('targetFound', () => {
-                if (step === 0) {
-                    step = 1;
-                    hint.textContent = "Чудово! Тепер зірочку!";
-                }
-            });
-
-            anchor2.addEventListener('targetFound', () => {
-                if (step !== 1) return;
-                
-                console.log("Маркер 2 знайдено, намагаємося відтворити звук");
-                
-                // Використовуємо стандартний Audio замість A-Frame sound
-                setTimeout(() => {
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Елементи управління
+            const startButton = document.getElementById('start-button');
+            const musicToggle = document.getElementById('music-toggle');
+            const micToggle = document.getElementById('mic-toggle');
+            const triggerLights = document.getElementById('trigger-lights');
+            const micStatus = document.getElementById('mic-status');
+            const arStatus = document.getElementById('ar-status');
+            const musicStatus = document.getElementById('music-status');
+            
+            let arStarted = false;
+            let isMusicPlaying = false;
+            let isMicActive = false;
+            let recognition;
+            let mindarThree;
+            let scene;
+            let garlandLights = [];
+            
+            // Аудіо елемент для музики
+            const backgroundMusic = new Audio();
+            
+            // Список можливих форматів музики (вибери той, який у тебе є)
+            const musicFormats = [
+                'music.mp3',           // MP3 файл
+                'music.ogg',           // OGG файл
+                'music.wav',           // WAV файл
+                'background.mp3',      // Інші можливі назви
+                'bgmusic.mp3',
+                'melody.mp3',
+                'christmas.mp3'
+            ];
+            
+            // Функція для завантаження музики
+            async function loadMusic() {
+                for (const format of musicFormats) {
                     try {
-                        if (waitingSound) {
-                            waitingSound.currentTime = 0;
-                            waitingSound.play();
-                            console.log("Звук успішно запущено");
-                        } else if (audioEntity.components.sound) {
-                            audioEntity.components.sound.play();
+                        // Спробуємо завантажити кожен формат
+                        backgroundMusic.src = format;
+                        backgroundMusic.load();
+                        
+                        // Перевірка, чи може браузер відтворити цей формат
+                        const canPlay = await new Promise((resolve) => {
+                            const checkPlay = () => {
+                                const canPlay = backgroundMusic.canPlayType('audio/mpeg') || 
+                                               backgroundMusic.canPlayType('audio/ogg') || 
+                                               backgroundMusic.canPlayType('audio/wav');
+                                resolve(canPlay);
+                            };
+                            backgroundMusic.addEventListener('canplaythrough', checkPlay);
+                            backgroundMusic.addEventListener('error', () => resolve(false));
+                            
+                            // Таймаут для перевірки
+                            setTimeout(() => resolve(false), 2000);
+                        });
+                        
+                        if (canPlay) {
+                            console.log(`Музика завантажена: ${format}`);
+                            showMessage(`Музика завантажена: ${format}`);
+                            backgroundMusic.loop = true;
+                            backgroundMusic.volume = 0.5;
+                            return true;
                         }
                     } catch (error) {
-                        console.error("Помилка відтворення звуку:", error);
+                        console.log(`Не вдалося завантажити ${format}:`, error);
+                        continue;
                     }
-                }, 100);
-                
-                hint.textContent = "Я тут, чекаю твого листа…";
-                step = 2;
-            });
-
-            anchor2.addEventListener('targetLost', () => {
-                // Пауза звуку коли маркер втрачено
-                if (waitingSound) {
-                    waitingSound.pause();
-                }
-            });
-
-            // Відстеження відстані до ельфа
-            sceneEl.addEventListener('renderstart', () => {
-                const camera = sceneEl.camera;
-                const update = () => {
-                    if (step === 2 && anchor2.object3D.visible) {
-                        const dist = camera.position.distanceTo(anchor2.object3D.getWorldPosition(new THREE.Vector3()));
-
-                        // Оновлюємо гучність звуку на основі відстані
-                        if (waitingSound) {
-                            const volume = Math.max(0.1, 1 - dist/5);
-                            waitingSound.volume = volume * 0.7; // базовий volume 0.7
-                        }
-
-                        if (dist < 0.5 && elfIdle.style.opacity === '0') {
-                            elfIdle.classList.remove('hidden');
-                            elfIdle.style.background = 'url("elf-idle.png") center bottom / 100% auto no-repeat';
-                            setTimeout(() => elfIdle.style.opacity = '1', 100);
-                            sendBtn.style.display = 'block';
-                        }
-                    }
-                    requestAnimationFrame(update);
-                };
-                update();
-            });
-
-            // Анімація idle
-            let frame = 0;
-            const idleInterval = setInterval(() => {
-                if (parseFloat(elfIdle.style.opacity) > 0) {
-                    frame = (frame + 1) % 24;
-                    elfIdle.style.backgroundPosition = `center ${-frame * (100 / 24)}%`;
-                }
-            }, 120);
-
-            // Обробник відправки листа
-            sendBtn.onclick = () => {
-                sendBtn.style.display = 'none';
-                elfIdle.style.opacity = '0';
-                
-                // Зупиняємо звук правильно
-                if (waitingSound) {
-                    waitingSound.pause();
-                }
-                if (audioEntity && audioEntity.components.sound) {
-                    audioEntity.components.sound.stop();
                 }
                 
-                clearInterval(idleInterval);
-                elfMagic.classList.remove('hidden');
-                elfMagic.style.background = 'url("elf-magic.png") center bottom / 100% auto no-repeat';
-               
+                // Якщо жоден файл не знайдено
+                console.warn('Не знайдено жодного файлу музики');
+                showMessage('Файл музики не знайдено. Додайте music.mp3 в папку проєкту.');
+                musicToggle.disabled = true;
+                musicToggle.textContent = '🎵 Немає музики';
+                musicToggle.style.background = '#757575';
+                return false;
+            }
+            
+            // Функція для показу повідомлень
+            function showMessage(text, duration = 3000) {
+                const message = document.createElement('div');
+                message.className = 'message';
+                message.textContent = text;
+                document.body.appendChild(message);
+                
                 setTimeout(() => {
-                    elfMagic.style.opacity = '1';
-                    if (magicSound) {
-                        magicSound.currentTime = 0;
-                        magicSound.play();
-                    }
-                }, 100);
+                    message.style.opacity = '0';
+                    setTimeout(() => message.remove(), 300);
+                }, duration);
+            }
+            
+            // Ініціалізація MindAR
+            async function initAR() {
+                try {
+                    const mindarThree = new MindARThree({
+                        container: document.getElementById('ar-scene'),
+                        imageTargetSrc: 'marcher.mind',
+                        uiScanning: false,
+                        uiLoading: true,
+                        filterMinCF: 0.001,
+                        filterBeta: 0.01,
+                    });
+                    
+                    const { renderer, scene: threeScene, camera } = mindarThree;
+                    
+                    // Налаштування рендерера
+                    renderer.setPixelRatio(window.devicePixelRatio);
+                    renderer.setSize(document.getElementById('ar-scene').offsetWidth, 
+                                    document.getElementById('ar-scene').offsetHeight);
+                    
+                    // Додаємо світло
+                    const light = new THREE.DirectionalLight(0xffffff, 1);
+                    light.position.set(0, 0, 1);
+                    threeScene.add(light);
+                    
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+                    threeScene.add(ambientLight);
+                    
+                    // Створюємо гірлянду (примітиви у формі трикутника)
+                    createGarland(threeScene);
+                    
+                    // Старт AR
+                    await mindarThree.start();
+                    
+                    // Оновлюємо статус
+                    arStatus.textContent = '📱 AR: активний';
+                    arStatus.style.color = '#4CAF50';
+                    
+                    // Анімація
+                    mindarThree.update();
+                    renderer.setAnimationLoop(() => {
+                        renderer.render(threeScene, camera);
+                    });
+                    
+                    return { mindarThree, scene: threeScene };
+                } catch (error) {
+                    console.error('Помилка ініціалізації AR:', error);
+                    arStatus.textContent = '📱 AR: помилка';
+                    arStatus.style.color = '#f44336';
+                    showMessage('Помилка AR. Перевірте доступ до камери та файл marcher.mind');
+                    return null;
+                }
+            }
+            
+            // Створення гірлянди
+            function createGarland(scene) {
+                const garlandGeometry = new THREE.SphereGeometry(0.02, 8, 8);
+                const garlandMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0x333300,
+                    transparent: true,
+                    opacity: 0.8
+                });
                 
-                hint.textContent = "Я передав твоє бажання Санті! Вітаю з Різдвом!";
+                // Створюємо вогники у формі трикутника (ялинка)
+                const trianglePoints = [
+                    // Верхній ряд
+                    { x: 0, y: 0.4, z: 0 },
+                    // Середній ряд
+                    { x: -0.15, y: 0.25, z: 0 },
+                    { x: 0, y: 0.25, z: 0 },
+                    { x: 0.15, y: 0.25, z: 0 },
+                    // Нижній ряд
+                    { x: -0.25, y: 0.1, z: 0 },
+                    { x: -0.1, y: 0.1, z: 0 },
+                    { x: 0.1, y: 0.1, z: 0 },
+                    { x: 0.25, y: 0.1, z: 0 },
+                    // Найнижчий ряд
+                    { x: -0.3, y: -0.05, z: 0 },
+                    { x: -0.15, y: -0.05, z: 0 },
+                    { x: 0, y: -0.05, z: 0 },
+                    { x: 0.15, y: -0.05, z: 0 },
+                    { x: 0.3, y: -0.05, z: 0 },
+                    // Основа
+                    { x: 0, y: -0.2, z: 0 }
+                ];
                 
-                let f = 0;
-                const anim = setInterval(() => {
-                    f++;
-                    if (f >= 36) {
-                        clearInterval(anim);
+                trianglePoints.forEach((point, index) => {
+                    const light = new THREE.Mesh(garlandGeometry, garlandMaterial.clone());
+                    light.position.set(point.x, point.y, point.z);
+                    scene.add(light);
+                    garlandLights.push({
+                        mesh: light,
+                        material: light.material,
+                        originalColor: 0x333300,
+                        activeColor: 0xffff00,
+                        isActive: false
+                    });
+                });
+            }
+            
+            // Анімація вогників
+            function animateLights() {
+                if (garlandLights.length === 0) return;
+                
+                garlandLights.forEach((lightObj, index) => {
+                    setTimeout(() => {
+                        lightObj.isActive = true;
+                        lightObj.material.color.setHex(lightObj.activeColor);
+                        lightObj.material.opacity = 1;
+                        
+                        // Ефект мерехтіння
+                        const interval = setInterval(() => {
+                            if (lightObj.isActive) {
+                                const intensity = 0.7 + Math.random() * 0.3;
+                                const flickerColor = Math.floor(lightObj.activeColor * intensity);
+                                lightObj.material.color.setHex(flickerColor);
+                                lightObj.material.opacity = 0.7 + Math.random() * 0.3;
+                            } else {
+                                clearInterval(interval);
+                            }
+                        }, 100);
+                        
+                        // Вимикаємо через 5 секунд
                         setTimeout(() => {
-                            elfMagic.style.opacity = '0';
-                            hint.innerHTML = 'Я передав твоє бажання Санті!<br><br>';
-                           
-                            const restartBtn = document.createElement('button');
-                            restartBtn.textContent = 'Розпочати знову';
-                            restartBtn.style.cssText = 'padding:15px 50px;font-size:1.6em;background:#27ae60;border:none;border-radius:50px;cursor:pointer';
-                            restartBtn.onclick = () => location.reload();
-                            hint.appendChild(restartBtn);
-                        }, 1200);
+                            lightObj.isActive = false;
+                            lightObj.material.color.setHex(lightObj.originalColor);
+                            lightObj.material.opacity = 0.8;
+                            clearInterval(interval);
+                        }, 5000);
+                    }, index * 150);
+                });
+            }
+            
+            // Голосове керування
+            function initVoiceRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    recognition = new SpeechRecognition();
+                    recognition.continuous = true;
+                    recognition.interimResults = false;
+                    recognition.lang = 'uk-UA';
+                    
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[event.results.length - 1][0].transcript;
+                        console.log('Розпізнано:', transcript);
+                        
+                        if (transcript.toLowerCase().includes('ялиночка гори')) {
+                            showMessage('Розпізнано: "Ялиночка гори!"');
+                            animateLights();
+                        }
+                    };
+                    
+                    recognition.onerror = (event) => {
+                        console.error('Помилка розпізнавання:', event.error);
+                        micStatus.textContent = '🎤 Мікрофон: помилка';
+                        micStatus.style.color = '#f44336';
+                        showMessage('Помилка мікрофона');
+                    };
+                    
+                    recognition.onend = () => {
+                        if (isMicActive) {
+                            setTimeout(() => recognition.start(), 100);
+                        }
+                    };
+                } else {
+                    console.warn('Web Speech API не підтримується');
+                    micToggle.disabled = true;
+                    micToggle.textContent = '🎤 Не підтримується';
+                    micToggle.style.background = '#757575';
+                    micStatus.textContent = '🎤 Мікрофон: не підтримується';
+                }
+            }
+            
+            // Обробники подій
+            startButton.addEventListener('click', async () => {
+                if (!arStarted) {
+                    startButton.disabled = true;
+                    startButton.textContent = '🔄 Завантаження...';
+                    
+                    const ar = await initAR();
+                    if (ar) {
+                        mindarThree = ar.mindarThree;
+                        scene = ar.scene;
+                        arStarted = true;
+                        startButton.textContent = '⏹️ Стоп AR';
+                        startButton.style.background = '#f44336';
+                        startButton.classList.add('active');
                     } else {
-                        elfMagic.style.backgroundPosition = `center ${-f * (100 / 36)}%`;
+                        startButton.textContent = '🚀 Старт AR';
                     }
-                }, 80);
-            };
-
-            loading.classList.add('hidden');
-        } catch (e) {
-            console.error('Помилка запуску AR:', e);
-            loading.classList.add('hidden');
-            alert('Не вдалося отримати доступ до камери. Увімкніть дозвіл.');
-           
-            document.getElementById('arContainer').classList.add('hidden');
-            document.getElementById('startScreen').classList.remove('hidden');
-        }
-    });
-</script>
+                    startButton.disabled = false;
+                } else {
+                    if (mindarThree) {
+                        mindarThree.stop();
+                    }
+                    arStarted = false;
+                    startButton.textContent = '🚀 Старт AR';
+                    startButton.style.background = '#2d5a27';
+                    startButton.classList.remove('active');
+                    arStatus.textContent = '📱 AR: не активний';
+                    arStatus.style.color = 'white';
+                }
+            });
+            
+            musicToggle.addEventListener('click', () => {
+                if (isMusicPlaying) {
+                    backgroundMusic.pause();
+                    musicToggle.textContent = '🎵 Увімк. музику';
+                    musicToggle.style.background = '#2d5a27';
+                    musicToggle.classList.remove('active');
+                    musicStatus.textContent = '🎵 Музика: вимкнено';
+                    isMusicPlaying = false;
+                } else {
+                    // Перевіряємо, чи завантажена музика
+                    if (!backgroundMusic.src || backgroundMusic.error) {
+                        showMessage('Завантаження музики...');
+                        loadMusic().then(success => {
+                            if (success) {
+                                playMusic();
+                            }
+                        });
+                    } else {
+                        playMusic();
+                    }
+                }
+                
+                function playMusic() {
+                    backgroundMusic.play()
+                        .then(() => {
+                            musicToggle.textContent = '🔇 Вимк. музику';
+                            musicToggle.style.background = '#4CAF50';
+                            musicToggle.classList.add('active');
+                            musicStatus.textContent = '🎵 Музика: грає';
+                            musicStatus.style.color = '#4CAF50';
+                            isMusicPlaying = true;
+                            showMessage('Музика увімкнена');
+                        })
+                        .catch(error => {
+                            console.error('Помилка відтворення музики:', error);
+                            showMessage('Помилка відтворення музики. Натисніть ще раз.');
+                            musicToggle.textContent = '🎵 Помилка';
+                            musicToggle.style.background = '#f44336';
+                        });
+                }
+            });
+            
+            micToggle.addEventListener('click', () => {
+                if (!recognition) {
+                    initVoiceRecognition();
+                }
+                
+                if (isMicActive) {
+                    recognition.stop();
+                    micStatus.textContent = '🎤 Мікрофон: вимкнено';
+                    micStatus.style.color = 'white';
+                    micToggle.textContent = '🎤 Увімк. мікрофон';
+                    micToggle.style.background = '#2d5a27';
+                    micToggle.classList.remove('active');
+                } else {
+                    try {
+                        recognition.start();
+                        micStatus.textContent = '🎤 Мікрофон: активний';
+                        micStatus.style.color = '#4CAF50';
+                        micToggle.textContent = '🎤 Вимк. мікрофон';
+                        micToggle.style.background = '#f44336';
+                        micToggle.classList.add('active');
+                        showMessage('Мікрофон активовано');
+                    } catch (error) {
+                        console.error('Помилка мікрофона:', error);
+                        micStatus.textContent = '🎤 Мікрофон: помилка';
+                        micStatus.style.color = '#f44336';
+                        showMessage('Помилка доступу до мікрофона');
+                    }
+                }
+                isMicActive = !isMicActive;
+            });
+            
+            triggerLights.addEventListener('click', () => {
+                if (arStarted) {
+                    animateLights();
+                    triggerLights.style.background = '#FF9800';
+                    triggerLights.classList.add('active');
+                    showMessage('Ялиночка гори! ✨');
+                    
+                    setTimeout(() => {
+                        triggerLights.style.background = '#2d5a27';
+                        triggerLights.classList.remove('active');
+                    }, 500);
+                } else {
+                    showMessage('Спочатку запустіть AR!', 2000);
+                }
+            });
+            
+            // Автоматичне вимкнення при закритті
+            window.addEventListener('beforeunload', () => {
+                if (recognition && isMicActive) {
+                    recognition.stop();
+                }
+                if (mindarThree) {
+                    mindarThree.stop();
+                }
+                if (backgroundMusic) {
+                    backgroundMusic.pause();
+                }
+            });
+            
+            // Адаптація розміру AR контейнера
+            window.addEventListener('resize', () => {
+                if (mindarThree && mindarThree.renderer) {
+                    const container = document.getElementById('ar-scene');
+                    mindarThree.renderer.setSize(container.offsetWidth, container.offsetHeight);
+                }
+            });
+            
+            // Завантаження музики при старті
+            loadMusic();
+            
+            // Ініціалізація голосового розпізнавання
+            initVoiceRecognition();
+        });
+    </script>
 </body>
 </html>

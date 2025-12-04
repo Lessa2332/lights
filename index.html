@@ -199,28 +199,28 @@
             look-controls="enabled: true"
         ></a-camera>
 
-        <a-entity mindar-image-target="targetIndex: 0">
-            <!-- Ялиночка стоїть НА ДОЛОНІ, як свічка! -->
-            <a-entity id="garland-container" rotation="0 0 0" position="0 0 -0.5" scale="0.6 0.6 0.6">
-                
-                <!-- 7 кульок — скориговані під "на долоні" -->
-                <a-sphere id="light1" class="garland-light" position="0 0.25 0" radius="0.05" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere id="light2" class="garland-light" position="-0.15 0.10 0" radius="0.05" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere id="light3" class="garland-light" position="0.15 0.10 0" radius="0.05" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere id="light4" class="garland-light" position="-0.25 -0.05 0" radius="0.05" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere id="light5" class="garland-light" position="0.25 -0.05 0" radius="0.05" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere id="light6" class="garland-light" position="-0.1 -0.20 0" radius="0.05" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere id="light7" class="garland-light" position="0.1 -0.20 0" radius="0.05" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+<a-entity mindar-image-target="targetIndex: 0">
+    <!-- Гірлянда всередині маркера-ялинки -->
+    <a-entity id="garland-container" rotation="0 0 0" position="0 -0.15 0" scale="0.35 0.35 0.35">
+        
+        <!-- 7 кульок - зменшені координати -->
+        <a-sphere id="light1" class="garland-light" position="0 0.15 0" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light2" class="garland-light" position="-0.10 0.06 0" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light3" class="garland-light" position="0.10 0.06 0" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light4" class="garland-light" position="-0.17 -0.03 0" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light5" class="garland-light" position="0.17 -0.03 0" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light6" class="garland-light" position="-0.07 -0.12 0" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+        <a-sphere id="light7" class="garland-light" position="0.07 -0.12 0" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
 
-                <!-- Снігопад (тепер над долонею) -->
-                <a-entity id="snow-container" position="0 0.3 0" visible="false">
-                    <a-entity particle-system="preset: snow; color: #ffffff,#ccccff; particleCount: 300; velocityValue: 0 0.3 0; velocitySpread: 1 0.2 1; opacity: 0.6; size: 0.01 0.05; accelerationValue: 0 -1 0;"></a-entity>
-                </a-entity>
-
-                <!-- Світло від ялиночки -->
-                <a-light id="garland-light" type="point" color="#FFD700" intensity="0" distance="2" position="0 0.05 0"></a-light>
-            </a-entity>
+        <!-- Снігопад над ялинкою -->
+        <a-entity id="snow-container" position="0 0.2 0" visible="false">
+            <a-entity particle-system="preset: snow; color: #ffffff,#ccccff; particleCount: 200; velocityValue: 0 0.2 0; velocitySpread: 0.8 0.15 0.8; opacity: 0.6; size: 0.008 0.03; accelerationValue: 0 -0.8 0;"></a-entity>
         </a-entity>
+
+        <!-- Світло -->
+        <a-light id="garland-light" type="point" color="#FFD700" intensity="0" distance="1.5" position="0 0 0"></a-light>
+    </a-entity>
+</a-entity>
     </a-scene>
 
     <!-- Проста кнопка -->
@@ -622,3 +622,4 @@
     </script>
 </body>
 </html>
+

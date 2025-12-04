@@ -202,23 +202,31 @@
 <a-entity mindar-image-target="targetIndex: 0">
     <!-- Гірлянда всередині маркера-ялинки -->
     <!-- ЗБІЛЬШИЛИ масштаб з 0.25 до 0.5 (в 2 рази більше) -->
-    <a-entity id="garland-container" rotation="0 0 0" position="0 0 0" scale="1.5 1.5 1.5">
-        
-        <!-- 7 кульок - збільшені в 2 рази і зміщені вниз -->
-        <!-- ЗБІЛЬШИЛИ radius з 0.03 до 0.09 -->
-        <a-sphere id="light1" class="garland-light" position="0 0.08 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light2" class="garland-light" position="-0.07 0.02 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light3" class="garland-light" position="0.07 0.02 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light4" class="garland-light" position="-0.09 -0.04 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light5" class="garland-light" position="0.09 -0.04 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light6" class="garland-light" position="-0.05 -0.10 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-        <a-sphere id="light7" class="garland-light" position="0.05 -0.10 0" radius="0.09" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+<a-entity id="garland-container" rotation="0 0 0" position="0 -0.05 0" scale="1.4 1.4 1.4">
+    <!-- 13 вогників гірлянди — розташування під твій маркер із фото -->
+    <a-sphere class="garland-light" position="0.00  0.32  0.01" radius="0.065"></a-sphere>   <!-- верхівка -->
+    <a-sphere class="garland-light" position="-0.10 0.26  0.01" radius="0.07"></a-sphere>
+    <a-sphere class="garland-light" position=" 0.11 0.25  0.01" radius="0.07"></a-sphere>
+    <a-sphere class="garland-light" position="-0.17 0.18  0.01" radius="0.075"></a-sphere>
+    <a-sphere class="garland-light" position=" 0.16 0.17  0.01" radius="0.075"></a-sphere>
+    <a-sphere class="garland-light" position="-0.22 0.09  0.01" radius="0.08"></a-sphere>
+    <a-sphere class="garland-light" position=" 0.20 0.08  0.01" radius="0.08"></a-sphere>
+    <a-sphere class="garland-light" position="-0.19 0.00  0.01" radius="0.085"></a-sphere>
+    <a-sphere class="garland-light" position=" 0.18 -0.01  0.01" radius="0.085"></a-sphere>
+    <a-sphere class="garland-light" position="-0.15 -0.08  0.01" radius="0.08"></a-sphere>
+    <a-sphere class="garland-light" position=" 0.14 -0.09  0.01" radius="0.08"></a-sphere>
+    <a-sphere class="garland-light" position="-0.09 -0.16  0.01" radius="0.075"></a-sphere>
+    <!-- низ -->
+    <a-sphere class="garland-light" position=" 0.08 -0.17  0.01" radius="0.075"></a-sphere>
 
-        <!-- Снігопад - теж збільшимо -->
-        <a-entity id="snow-container" position="0 0.2 0" visible="false">
-            <a-entity particle-system="preset: snow; color: #ffffff,#ccccff; particleCount: 200; velocityValue: 0 0.2 0; velocitySpread: 0.8 0.15 0.8; opacity: 0.6; size: 0.008 0.03; accelerationValue: 0 -0.8 0;"></a-entity>
-        </a-entity>
+    <!-- Снігопад трохи вище -->
+    <a-entity id="snow-container" position="0 0.4 0" visible="false">
+        <a-entity particle-system="preset: snow; particleCount: 300; color: #fff,#eee; size: 0.01 0.04; opacity: 0.7; velocityValue: 0 0.3 0; velocitySpread: 0.8 0.2 0.8; accelerationValue: 0 -0.8 0;"></a-entity>
+    </a-entity>
 
+    <!-- Центральне тепле світло -->
+    <a-light id="garland-light" type="point" intensity="0" color="#ffaa33" distance="2" decay="1" position="0 0.1 0"></a-light>
+</a-entity>
         <!-- Світло - теж збільшимо -->
         <a-light id="garland-light" type="point" color="#FFD700" intensity="0" distance="1.5" position="0 0 0"></a-light>
     </a-entity>
@@ -664,4 +672,5 @@ light.appendChild(pulseAnim);
     </script>
 </body>
 </html>
+
 

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="AR гірлянда з голосовим керуванням">
-    <title>🎄 AR Гірлянда</title>
+    <meta name="description" content="AR гірлянда для дітей з голосовим керуванням">
+    <title>🎄 AR Ялиночка</title>
 
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
@@ -37,7 +37,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0c2461, #1e3799);
+            background: linear-gradient(135deg, #1a472a, #2e7d32);
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -74,209 +74,86 @@
             filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
         }
 
-        /* Головні кнопки */
-        .main-controls {
+        /* Проста кнопка */
+        .simple-btn {
             position: absolute;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10000;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 95%;
-        }
-
-        .main-btn {
-            padding: 14px 24px;
+            padding: 18px 40px;
             border: none;
-            border-radius: 30px;
-            background: linear-gradient(145deg, #4a69bd, #3c538f);
+            border-radius: 40px;
+            background: linear-gradient(145deg, #ff4444, #cc0000);
             color: white;
-            font-size: 0.95em;
-            cursor: pointer;
+            font-size: 1.2em;
             font-weight: bold;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s;
-            min-width: 150px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 215, 0, 0.3);
-        }
-
-        .main-btn:hover {
-            background: linear-gradient(145deg, #5a79cd, #4c638f);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-        }
-
-        .main-btn:active {
-            transform: translateY(0);
-        }
-
-        .main-btn.active {
-            background: linear-gradient(145deg, #4CAF50, #388E3C);
-            color: white;
-            border-color: #81C784;
-        }
-
-        .main-btn.off {
-            background: linear-gradient(145deg, #f44336, #d32f2f);
-            border-color: #ef5350;
-        }
-
-        /* Панель налаштувань */
-        .settings-panel {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 10000;
-            background: rgba(0, 0, 0, 0.85);
-            color: white;
-            padding: 15px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 215, 0, 0.3);
-            display: none;
-            max-width: 300px;
-        }
-
-        .settings-group {
-            margin-bottom: 15px;
-        }
-
-        .settings-group h3 {
-            margin: 0 0 10px 0;
-            color: #ffd700;
-            font-size: 1.1em;
-        }
-
-        .setting-option {
-            display: flex;
-            align-items: center;
-            margin: 8px 0;
             cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4);
+            transition: all 0.3s;
+            font-family: 'Comic Sans MS', cursive;
+            border: 4px solid white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        .setting-option input[type="radio"] {
-            margin-right: 10px;
+        .simple-btn:hover {
+            background: linear-gradient(145deg, #ff6666, #ff0000);
+            transform: translateX(-50%) translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 0, 0, 0.6);
         }
 
-        .slider-container {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
+        .simple-btn:active {
+            transform: translateX(-50%) translateY(0);
         }
 
-        .slider-container label {
-            margin-right: 10px;
-            min-width: 100px;
-        }
-
-        .slider-container input[type="range"] {
-            flex: 1;
-        }
-
-        .value-display {
-            margin-left: 10px;
-            min-width: 30px;
-            text-align: center;
-            color: #ffd700;
-        }
-
-        /* Інформаційна панель */
-        .info-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 10000;
-            background: rgba(0, 0, 0, 0.85);
-            color: white;
-            padding: 15px;
-            border-radius: 20px;
-            max-width: 300px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 215, 0, 0.3);
-            display: none;
-        }
-
-        .info-panel h3 {
-            margin: 0 0 10px 0;
-            color: #ffd700;
-            font-size: 1.1em;
-        }
-
-        .info-panel p {
-            margin: 5px 0;
-            font-size: 0.9em;
-            line-height: 1.4;
-        }
-
-        .voice-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-            background: #ff4444;
-            animation: voicePulse 1s infinite;
-        }
-
-        @keyframes voicePulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        .voice-indicator.active {
-            background: #4CAF50;
-            animation: voiceActive 0.5s infinite alternate;
-        }
-
-        @keyframes voiceActive {
-            0% { opacity: 0.5; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.3); }
+        .simple-btn.active {
+            background: linear-gradient(145deg, #4CAF50, #2e7d32);
+            box-shadow: 0 8px 20px rgba(0, 255, 0, 0.4);
+            border-color: #a5d6a7;
         }
 
         /* Спіч-бабл */
         .speech-bubble {
             position: absolute;
-            top: 80px;
+            top: 50px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 12px 20px;
-            border-radius: 20px;
-            border: 2px solid #ffd700;
+            padding: 15px 25px;
+            border-radius: 25px;
+            border: 3px solid #ffd700;
             z-index: 10001;
             display: none;
-            font-size: 1.1em;
-            backdrop-filter: blur(10px);
-            max-width: 80%;
+            font-size: 1.3em;
+            font-weight: bold;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.7);
+            font-family: 'Comic Sans MS', cursive;
+            min-width: 200px;
         }
 
         /* Адаптивність */
         @media (max-width: 768px) {
-            .main-controls {
-                bottom: 15px;
-                gap: 10px;
+            .simple-btn {
+                padding: 16px 35px;
+                font-size: 1.1em;
+                bottom: 25px;
             }
             
-            .main-btn {
-                padding: 12px 20px;
-                font-size: 0.9em;
-                min-width: 130px;
+            .speech-bubble {
+                font-size: 1.1em;
+                top: 40px;
             }
-            
-            .settings-panel,
-            .info-panel {
-                top: 15px;
-                left: 15px;
-                right: 15px;
-                max-width: none;
-                width: calc(100% - 30px);
+        }
+
+        @media (max-width: 480px) {
+            .simple-btn {
+                padding: 14px 30px;
+                font-size: 1em;
+                bottom: 20px;
+                width: 90%;
+                max-width: 300px;
             }
             
             .loader h1 {
@@ -286,103 +163,20 @@
             .pulse {
                 font-size: 3em;
             }
-            
-            .speech-bubble {
-                top: 70px;
-                font-size: 1em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-controls {
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-                bottom: 10px;
-            }
-            
-            .main-btn {
-                width: 90%;
-                max-width: 280px;
-                min-width: auto;
-            }
         }
     </style>
 </head>
 <body>
     <!-- Лоадер -->
     <div class="loader" id="loader">
-        <div class="pulse">✨</div>
-        <h1>AR Гірлянда</h1>
-        <p>Наведіть камеру на маркер</p>
-        <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.7;">Зачекайте, завантажується...</p>
+        <div class="pulse">🎄</div>
+        <h1>AR Ялиночка</h1>
+        <p>Наведи камеру на маркер</p>
+        <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.7;">Чекай, завантажується...</p>
     </div>
     
     <!-- Спіч-бабл для розпізнавання мови -->
     <div class="speech-bubble" id="speech-bubble"></div>
-    
-    <!-- Інформаційна панель -->
-    <div class="info-panel" id="info-panel">
-        <h3>🎤 Голосове керування</h3>
-        <p><span class="voice-indicator" id="voice-indicator"></span> <span id="voice-status">Розпізнавання вимкнено</span></p>
-        <p>🗣️ Скажіть голосно:</p>
-        <p><strong>"Ялиночка"</strong> - увімкнути/вимкнути</p>
-        <p><strong>"Гірлянда"</strong> - змінити режим</p>
-        <p><strong>"Новорічна"</strong> - спецефекти</p>
-        <p style="margin-top: 10px; color: #ffd700;">💡 Автоматичне вимкнення через 15с</p>
-    </div>
-    
-    <!-- Панель налаштувань -->
-    <div class="settings-panel" id="settings-panel">
-        <div class="settings-group">
-            <h3>📐 Розташування маркера</h3>
-            <label class="setting-option">
-                <input type="radio" name="marker-type" value="table" checked>
-                <span>На столі (лежить)</span>
-            </label>
-            <label class="setting-option">
-                <input type="radio" name="marker-type" value="wall">
-                <span>На стіні (висить)</span>
-            </label>
-        </div>
-        
-        <div class="settings-group">
-            <h3>🎛️ Налаштування мови</h3>
-            <div class="slider-container">
-                <label>Чутливість:</label>
-                <input type="range" id="sensitivity-slider" min="1" max="10" value="5">
-                <span class="value-display" id="sensitivity-value">5</span>
-            </div>
-        </div>
-        
-        <div class="settings-group">
-            <h3>🔧 Налаштування вогників</h3>
-            <div class="slider-container">
-                <label>Висота:</label>
-                <input type="range" id="height-slider" min="1" max="50" value="5">
-                <span class="value-display" id="height-value">5 см</span>
-            </div>
-            <div class="slider-container">
-                <label>Розмір:</label>
-                <input type="range" id="size-slider" min="10" max="200" value="100">
-                <span class="value-display" id="size-value">100%</span>
-            </div>
-        </div>
-        
-        <div class="settings-group">
-            <h3>✨ Ефекти</h3>
-            <label class="setting-option">
-                <input type="checkbox" id="chasing-effect" checked>
-                <span>Бігаючі вогники</span>
-            </label>
-            <label class="setting-option">
-                <input type="checkbox" id="snow-effect" checked>
-                <span>Снігопад</span>
-            </label>
-        </div>
-        
-        <button id="apply-settings" class="main-btn" style="width: 100%; margin-top: 10px; padding: 10px;">Застосувати</button>
-    </div>
 
     <!-- A-Frame сцена -->
     <a-scene
@@ -394,9 +188,10 @@
         renderer="colorManagement: true; physicallyCorrectLights: true;"
     >
         <a-assets>
-            <audio id="bg-music" src="music.mp3" preload="auto"></audio>
-            <audio id="ignite-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkle-300.mp3" preload="auto"></audio>
-            <audio id="extinguish-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-candle-blowing-302.mp3" preload="auto"></audio>
+            <audio id="ignite-sound" preload="auto">
+                <!-- Вбудований короткий звук через data URI -->
+                <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+            </audio>
         </a-assets>
 
         <a-camera
@@ -406,12 +201,14 @@
         ></a-camera>
 
         <a-entity mindar-image-target="targetIndex: 0">
-            <!-- Контейнер гірлянди з правильною орієнтацією -->
-            <a-entity id="garland-container" rotation="0 0 0" position="0 0.05 0" scale="1 1 1">
-                <!-- 7 кульок гірлянди у формі трикутника -->
+            <!-- Контейнер гірлянди - опускаємо НИЖЧЕ маркера -->
+            <!-- Змінено позицію Y з 0.05 на -0.15 - опускаємо гірлянду нижче маркера -->
+            <a-entity id="garland-container" rotation="0 0 0" position="0 -0.15 0" scale="0.8 0.8 0.8">
+                <!-- 7 кульок гірлянди у формі трикутника - перероблено координати -->
+                <!-- Тепер вони розташовані нижче по осі Y -->
                 <!-- Ряд 1 (верхній) -->
-                <a-sphere id="light1" class="garland-light" position="0 0.27 0" 
-                    radius="0.04" 
+                <a-sphere id="light1" class="garland-light" position="0 -0.03 0" 
+                    radius="0.05" 
                     color="#000000" 
                     opacity="0.3"
                     transparent="true"
@@ -420,8 +217,8 @@
                 </a-sphere>
                 
                 <!-- Ряд 2 -->
-                <a-sphere id="light2" class="garland-light" position="-0.15 0.12 0" 
-                    radius="0.04" 
+                <a-sphere id="light2" class="garland-light" position="-0.15 -0.18 0" 
+                    radius="0.05" 
                     color="#000000" 
                     opacity="0.3"
                     transparent="true"
@@ -429,8 +226,8 @@
                     emissive-intensity="0">
                 </a-sphere>
                 
-                <a-sphere id="light3" class="garland-light" position="0.15 0.12 0" 
-                    radius="0.04" 
+                <a-sphere id="light3" class="garland-light" position="0.15 -0.18 0" 
+                    radius="0.05" 
                     color="#000000" 
                     opacity="0.3"
                     transparent="true"
@@ -439,8 +236,8 @@
                 </a-sphere>
                 
                 <!-- Ряд 3 -->
-                <a-sphere id="light4" class="garland-light" position="-0.25 -0.03 0" 
-                    radius="0.04" 
+                <a-sphere id="light4" class="garland-light" position="-0.25 -0.33 0" 
+                    radius="0.05" 
                     color="#000000" 
                     opacity="0.3"
                     transparent="true"
@@ -448,8 +245,8 @@
                     emissive-intensity="0">
                 </a-sphere>
                 
-                <a-sphere id="light5" class="garland-light" position="0.25 -0.03 0" 
-                    radius="0.04" 
+                <a-sphere id="light5" class="garland-light" position="0.25 -0.33 0" 
+                    radius="0.05" 
                     color="#000000" 
                     opacity="0.3"
                     transparent="true"
@@ -458,8 +255,8 @@
                 </a-sphere>
                 
                 <!-- Ряд 4 (нижній) -->
-                <a-sphere id="light6" class="garland-light" position="-0.1 -0.18 0" 
-                    radius="0.04" 
+                <a-sphere id="light6" class="garland-light" position="-0.1 -0.48 0" 
+                    radius="0.05" 
                     color="#000000" 
                     opacity="0.3"
                     transparent="true"
@@ -467,8 +264,8 @@
                     emissive-intensity="0">
                 </a-sphere>
                 
-                <a-sphere id="light7" class="garland-light" position="0.1 -0.18 0" 
-                    radius="0.04" 
+                <a-sphere id="light7" class="garland-light" position="0.1 -0.48 0" 
+                    radius="0.05" 
                     color="#000000" 
                     opacity="0.3"
                     transparent="true"
@@ -477,214 +274,59 @@
                 </a-sphere>
                 
                 <!-- Снігопад (прихований за замовчуванням) -->
-                <a-entity id="snow-container" position="0 0.2 0" visible="false">
+                <a-entity id="snow-container" position="0 -0.1 0" visible="false">
                     <a-entity particle-system="preset: snow; 
-                                               color: #ffffff,#ccccff,#e6e6ff; 
-                                               particleCount: 600; 
-                                               velocityValue: 0 0.4 0; 
-                                               velocitySpread: 1.5 0.2 1.5; 
-                                               opacity: 0.7; 
-                                               size: 0.015 0.06; 
-                                               accelerationValue: 0 -1.5 0;
+                                               color: #ffffff,#ccccff; 
+                                               particleCount: 300; 
+                                               velocityValue: 0 0.3 0; 
+                                               velocitySpread: 1 0.2 1; 
+                                               opacity: 0.6; 
+                                               size: 0.01 0.05; 
+                                               accelerationValue: 0 -1 0;
                                                blending: additive"></a-entity>
                 </a-entity>
                 
                 <!-- Світло від гірлянди -->
-                <a-light id="garland-light" type="point" color="#FFD700" intensity="0" distance="2" position="0 0 0"></a-light>
-                
-                <!-- Додаткові ефекти світіння -->
-                <a-light id="ambient-glow" type="ambient" color="#FFD700" intensity="0"></a-light>
+                <a-light id="garland-light" type="point" color="#FFD700" intensity="0" distance="2" position="0 -0.25 0"></a-light>
             </a-entity>
         </a-entity>
     </a-scene>
 
-    <!-- Головні кнопки -->
-    <div class="main-controls">
-        <button id="music-btn" class="main-btn">🎵 Музика</button>
-        <button id="mic-btn" class="main-btn">🎤 Розпізнавання</button>
-        <button id="lights-btn" class="main-btn" disabled>✨ Увімкнути</button>
-        <button id="settings-btn" class="main-btn">⚙️ Налаштування</button>
-    </div>
+    <!-- Проста кнопка -->
+    <button id="lights-btn" class="simple-btn" disabled>🎄 Увімкнути ялиночку!</button>
 
     <script>
         // Посилання на елементи
         const loader = document.getElementById('loader');
-        const infoPanel = document.getElementById('info-panel');
-        const voiceIndicator = document.getElementById('voice-indicator');
-        const voiceStatus = document.getElementById('voice-status');
         const speechBubble = document.getElementById('speech-bubble');
-        const settingsPanel = document.getElementById('settings-panel');
         const targetEntity = document.querySelector('[mindar-image-target]');
         const garlandContainer = document.getElementById('garland-container');
         const snowContainer = document.getElementById('snow-container');
-        const musicBtn = document.getElementById('music-btn');
-        const micBtn = document.getElementById('mic-btn');
         const lightsBtn = document.getElementById('lights-btn');
-        const settingsBtn = document.getElementById('settings-btn');
-        const bgMusic = document.getElementById('bg-music');
-        const igniteSound = document.getElementById('ignite-sound');
-        const extinguishSound = document.getElementById('extinguish-sound');
         const garlandLight = document.getElementById('garland-light');
-        const ambientGlow = document.getElementById('ambient-glow');
-        const applySettingsBtn = document.getElementById('apply-settings');
-        
-        // Елементи налаштувань
-        const sensitivitySlider = document.getElementById('sensitivity-slider');
-        const sensitivityValue = document.getElementById('sensitivity-value');
-        const heightSlider = document.getElementById('height-slider');
-        const heightValue = document.getElementById('height-value');
-        const sizeSlider = document.getElementById('size-slider');
-        const sizeValue = document.getElementById('size-value');
-        const markerTypeRadios = document.querySelectorAll('input[name="marker-type"]');
-        const chasingEffectCheckbox = document.getElementById('chasing-effect');
-        const snowEffectCheckbox = document.getElementById('snow-effect');
+        const igniteSound = document.getElementById('ignite-sound');
         
         // Масив з 7 кульками
         const lights = Array.from(document.querySelectorAll('.garland-light'));
         
         // Змінні стану
-        let isMusicPlaying = false;
-        let isSpeechRecognitionActive = false;
         let isGarlandOn = false;
         let garlandTimeout = null;
-        let speechRecognition = null;
-        let chasingLightsInterval = null;
+        let micStream = null;
+        let audioContext = null;
+        let analyser = null;
+        let dataArray = null;
+        let audioInterval = null;
         
         // Налаштування
         let settings = {
-            markerType: 'table', // 'table' або 'wall'
-            sensitivity: 5,      // чутливість розпізнавання (1-10)
-            height: 0.05,        // висота вогників в метрах (0.01-0.5м)
-            size: 1.0,           // розмір вогників (0.1-2.0)
-            chasingEffect: true, // бігаючі вогники
+            sensitivity: 25,     // чутливість мікрофона
             snowEffect: true     // снігопад
         };
         
-        // Функція оновлення відображення значень слайдерів
-        function updateSliderValues() {
-            sensitivityValue.textContent = settings.sensitivity;
-            heightValue.textContent = Math.round(settings.height * 100) + ' см';
-            sizeValue.textContent = Math.round(settings.size * 100) + '%';
-            chasingEffectCheckbox.checked = settings.chasingEffect;
-            snowEffectCheckbox.checked = settings.snowEffect;
-        }
-
-        // Функція застосування налаштувань
-        function applySettings() {
-            console.log('Застосовуємо налаштування:', settings);
-            
-            const container = garlandContainer;
-            
-            if (settings.markerType === 'wall') {
-                // Маркер на стіні → гірлянда висить вертикально, прямо над маркером
-                container.setAttribute('rotation', '-90 0 0');    // перевертаємо на 90° по X
-                container.setAttribute('position', `0 0 ${settings.height}`); // піднімаємо по Z (вгору від стіни)
-            } else {
-                // Маркер на столі → гірлянда лежить горизонтально, трохи вище
-                container.setAttribute('rotation', '0 0 0');      // стандартне положення
-                container.setAttribute('position', `0 ${settings.height} 0`); // піднімаємо по Y
-            }
-            
-            // Розмір
-            container.setAttribute('scale', `${settings.size} ${settings.size} ${settings.size}`);
-            
-            // Оновлюємо вплив на сніг
-            if (snowContainer) {
-                snowContainer.setAttribute('visible', settings.snowEffect && isGarlandOn);
-            }
-            
-            updateSliderValues();
-            settingsPanel.style.display = 'none';
-            settingsBtn.textContent = '⚙️ Налаштування';
-            settingsBtn.classList.remove('active');
-        }
-
-        // Ініціалізація розпізнавання мови
-        function initSpeechRecognition() {
-            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-                console.error('Розпізнавання мови не підтримується в цьому браузері');
-                micBtn.textContent = '🎤 Не підтримується';
-                micBtn.classList.add('off');
-                voiceStatus.textContent = 'Браузер не підтримує';
-                return null;
-            }
-            
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.lang = 'uk-UA';
-            recognition.continuous = true;
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 3;
-            
-            recognition.onstart = () => {
-                console.log('🎤 Розпізнавання мови активовано');
-                micBtn.textContent = '🎤 Слухаємо...';
-                micBtn.classList.add('active');
-                isSpeechRecognitionActive = true;
-                voiceIndicator.classList.add('active');
-                voiceStatus.textContent = 'Слухаю... скажіть "Ялиночка"';
-            };
-            
-            recognition.onresult = (event) => {
-                const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
-                console.log('🎤 Розпізнано:', transcript);
-                
-                // Показуємо спіч-бабл
-                showSpeechBubble(transcript);
-                
-                // Перевіряємо ключові слова
-                if (transcript.includes('ялиночка')) {
-                    console.log('🔥 Команда "Ялиночка" отримана!');
-                    if (!isGarlandOn) {
-                        igniteGarland();
-                    } else {
-                        extinguishGarland();
-                    }
-                } else if (transcript.includes('гірлянда')) {
-                    console.log('✨ Команда "Гірлянда" отримана!');
-                    if (isGarlandOn) {
-                        changeLightMode();
-                    }
-                } else if (transcript.includes('новорічна')) {
-                    console.log('🎄 Команда "Новорічна" отримана!');
-                    triggerSpecialEffects();
-                }
-            };
-            
-            recognition.onerror = (event) => {
-                console.error('Помилка розпізнавання мови:', event.error);
-                if (event.error === 'not-allowed') {
-                    voiceStatus.textContent = 'Дозвіл не надано';
-                    micBtn.textContent = '🎤 Дозвіл потрібен';
-                    micBtn.classList.add('off');
-                } else if (event.error === 'network') {
-                    voiceStatus.textContent = 'Мережева помилка';
-                }
-                stopSpeechRecognition();
-            };
-            
-            recognition.onend = () => {
-                console.log('🎤 Розпізнавання мови завершено');
-                if (isSpeechRecognitionActive) {
-                    // Автоматично перезапускаємо, якщо не було помилки
-                    setTimeout(() => {
-                        if (isSpeechRecognitionActive) {
-                            try {
-                                recognition.start();
-                            } catch (e) {
-                                console.log('Не вдалося перезапустити розпізнавання');
-                            }
-                        }
-                    }, 100);
-                }
-            };
-            
-            return recognition;
-        }
-        
         // Функція показу спіч-бабла
         function showSpeechBubble(text) {
-            speechBubble.textContent = `"${text}"`;
+            speechBubble.textContent = text;
             speechBubble.style.display = 'block';
             
             // Приховуємо через 2 секунди
@@ -693,37 +335,85 @@
                 speechBubble.style.display = 'none';
             }, 2000);
         }
-        
-        // Функція старту розпізнавання мови
-        function startSpeechRecognition() {
-            if (!speechRecognition) {
-                speechRecognition = initSpeechRecognition();
-            }
-            
-            if (speechRecognition) {
-                try {
-                    speechRecognition.start();
-                } catch (e) {
-                    console.error('Помилка старту розпізнавання:', e);
-                }
+
+        // Ініціалізація мікрофона
+        async function initMicrophone() {
+            try {
+                // Запитуємо мікрофон
+                micStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: true
+                });
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(micStream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                analyser.smoothingTimeConstant = 0.1;
+                source.connect(analyser);
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                
+                // Показуємо сповіщення
+                showSpeechBubble("🎤 Слухаю... скажи 'Ялиночка!'");
+                
+                // Запускаємо обробку аудіо
+                processAudio();
+                
+            } catch (err) {
+                console.error('Помилка мікрофона:', err);
+                showSpeechBubble("🔇 Дозволь доступ до мікрофона!");
             }
         }
-        
-        // Функція зупинки розпізнавання мови
-        function stopSpeechRecognition() {
-            isSpeechRecognitionActive = false;
-            if (speechRecognition) {
-                try {
-                    speechRecognition.stop();
-                } catch (e) {
-                    console.error('Помилка зупинки розпізнавання:', e);
+
+        // Функція обробки аудіо для виявлення слова "Ялиночка"
+        function processAudio() {
+            if (!analyser) return;
+            
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Обчислюємо середню гучність
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+            }
+            const avgVolume = sum / dataArray.length;
+            
+            // Перевіряємо, чи перевищено поріг
+            if (avgVolume > settings.sensitivity) {
+                console.log('🎤 Виявлено звук! Гучність:', avgVolume);
+                
+                // Якщо звук достатньо гучний
+                if (avgVolume > settings.sensitivity + 10) {
+                    if (!isGarlandOn) {
+                        console.log('🔥 Слово виявлено! Запалюємо гірлянду');
+                        igniteGarland();
+                        
+                        // Показуємо сповіщення
+                        showSpeechBubble("✨ Ялиночка запалилася!");
+                        
+                        // Вібрація (якщо підтримується)
+                        if (navigator.vibrate) {
+                            navigator.vibrate([100, 50, 100]);
+                        }
+                    }
                 }
             }
             
-            micBtn.textContent = '🎤 Розпізнавання';
-            micBtn.classList.remove('active');
-            voiceIndicator.classList.remove('active');
-            voiceStatus.textContent = 'Розпізнавання вимкнено';
+            // Продовжуємо обробку
+            if (audioInterval) clearTimeout(audioInterval);
+            audioInterval = setTimeout(() => processAudio(), 50);
+        }
+
+        // Функція зупинки мікрофона
+        function stopMicrophone() {
+            if (micStream) {
+                micStream.getTracks().forEach(track => track.stop());
+            }
+            if (audioContext) audioContext.close();
+            if (audioInterval) clearTimeout(audioInterval);
+            analyser = null;
+            micStream = null;
+            audioContext = null;
+            audioInterval = null;
         }
         
         // Логіка відстеження маркера
@@ -734,23 +424,17 @@
                 if (garlandContainer) {
                     garlandContainer.setAttribute('visible', 'true');
                 }
-                // Показуємо інформаційну панель
-                infoPanel.style.display = 'block';
                 lightsBtn.disabled = false;
                 
-                // Запитуємо дозвіл на гіроскоп для iOS
-                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    DeviceOrientationEvent.requestPermission()
-                        .then(permissionState => {
-                            if (permissionState === 'granted') {
-                                console.log('Дозвіл на гіроскоп отримано');
-                            }
-                        })
-                        .catch(console.error);
-                }
+                // Автоматично вмикаємо мікрофон
+                setTimeout(() => {
+                    initMicrophone();
+                }, 1000);
                 
-                // Застосовуємо початкові налаштування
-                applySettings();
+                // Показуємо перше сповіщення
+                setTimeout(() => {
+                    showSpeechBubble("🎄 Наведи камеру на ялиночку!");
+                }, 1500);
             });
 
             targetEntity.addEventListener('targetLost', () => {
@@ -760,78 +444,42 @@
                 }
                 // Вимикаємо все при втраті маркера
                 stopGarland();
-                if (bgMusic && !bgMusic.paused) bgMusic.pause();
-                stopSpeechRecognition();
+                stopMicrophone();
                 
                 // Оновлюємо UI
                 loader.style.display = 'flex';
-                infoPanel.style.display = 'none';
-                settingsPanel.style.display = 'none';
                 speechBubble.style.display = 'none';
                 resetUI();
                 lightsBtn.disabled = true;
                 
                 // Скидаємо стани
-                isMusicPlaying = false;
-                isSpeechRecognitionActive = false;
                 isGarlandOn = false;
             });
-        }
-
-        // Функція запуску бігаючих вогників
-        function startChasingLights() {
-            if (chasingLightsInterval) {
-                clearInterval(chasingLightsInterval);
-            }
-            
-            let runningIndex = 0;
-            chasingLightsInterval = setInterval(() => {
-                if (!isGarlandOn || !settings.chasingEffect) {
-                    clearInterval(chasingLightsInterval);
-                    return;
-                }
-                
-                lights.forEach((l, i) => {
-                    if (l) {
-                        // Освітлюємо поточну кульку, інші робимо тьмянішими
-                        if (i === runningIndex) {
-                            l.setAttribute('emissive-intensity', '4');
-                            l.setAttribute('scale', '1.15 1.15 1.15');
-                        } else {
-                            l.setAttribute('emissive-intensity', '1.2');
-                            l.setAttribute('scale', '1 1 1');
-                        }
-                    }
-                });
-                
-                runningIndex = (runningIndex + 1) % lights.length;
-            }, 200); // Швидкість бігання вогників
         }
 
         // Функція запалювання гірлянди
         function igniteGarland() {
             if (isGarlandOn) return;
             
-            console.log('✨ Запалюємо гірлянду!');
+            console.log('✨ Запалюємо ялиночку!');
             isGarlandOn = true;
-            lightsBtn.textContent = '💫 Горить';
+            lightsBtn.textContent = '✨ Ялиночка горить!';
             lightsBtn.classList.add('active');
             
-            // Звук запалювання
+            // Спроба відтворити звук
             if (igniteSound) {
                 igniteSound.currentTime = 0;
                 igniteSound.play().catch(e => console.log('Не вдалося відтворити звук'));
             }
             
             // Увімкнути світло
-            garlandLight.setAttribute('intensity', '2.0');
+            garlandLight.setAttribute('intensity', '1.5');
             garlandLight.setAttribute('color', '#FFD700');
-            ambientGlow.setAttribute('intensity', '0.3');
             
             // Більш реалістичні кольори для вогників
             const fireColors = ['#FFFF00', '#FFA500', '#FF4500', '#FFD700', '#FF8C00'];
             
-            // Анімація вогників
+            // Анімація вогників з пульсацією
             lights.forEach((light, index) => {
                 if (!light) return;
                 
@@ -842,33 +490,35 @@
                 light.setAttribute('opacity', '1');
                 light.setAttribute('color', color);
                 light.setAttribute('emissive', color);
-                light.setAttribute('emissive-intensity', '3');
-                light.setAttribute('scale', '1 1 1'); // Скидаємо масштаб
+                light.setAttribute('emissive-intensity', '2');
+                light.setAttribute('scale', '1 1 1');
                 
                 // Видаляємо старі анімації
                 const oldAnims = light.querySelectorAll('a-animation');
                 oldAnims.forEach(anim => anim.remove());
                 
-                // Додаємо анімацію пульсації
+                // ДОДАЄМО ПУЛЬСАЦІЮ: кулька збільшується-зменшується
                 const pulseAnim = document.createElement('a-animation');
                 pulseAnim.setAttribute('attribute', 'scale');
                 pulseAnim.setAttribute('from', '1 1 1');
-                pulseAnim.setAttribute('to', '1.1 1.1 1.1');
-                pulseAnim.setAttribute('dur', '1000 + Math.random() * 500');
+                pulseAnim.setAttribute('to', '1.3 1.3 1.3'); // Збільшуємо на 30%
+                pulseAnim.setAttribute('dur', '800 + Math.random() * 400'); // Випадкова швидкість
                 pulseAnim.setAttribute('direction', 'alternate');
                 pulseAnim.setAttribute('repeat', 'indefinite');
-                pulseAnim.setAttribute('begin', index * 150 + 'ms');
+                pulseAnim.setAttribute('begin', index * 100 + 'ms'); // Послідовне запуск
+                pulseAnim.setAttribute('easing', 'ease-in-out');
                 light.appendChild(pulseAnim);
                 
-                // Анімація мерехтіння (інтенсивність)
+                // Додаємо анімацію мерехтіння (інтенсивність)
                 const flickerAnim = document.createElement('a-animation');
                 flickerAnim.setAttribute('attribute', 'emissive-intensity');
-                flickerAnim.setAttribute('from', '2');
-                flickerAnim.setAttribute('to', '3.5');
-                flickerAnim.setAttribute('dur', '200 + Math.random() * 300');
+                flickerAnim.setAttribute('from', '1.5');
+                flickerAnim.setAttribute('to', '3');
+                flickerAnim.setAttribute('dur', '300 + Math.random() * 200');
                 flickerAnim.setAttribute('direction', 'alternate');
                 flickerAnim.setAttribute('repeat', 'indefinite');
                 flickerAnim.setAttribute('begin', Math.random() * 1000 + 'ms');
+                flickerAnim.setAttribute('easing', 'ease-in-out');
                 light.appendChild(flickerAnim);
                 
                 // Анімація кольору (для ефекту полум'я)
@@ -876,187 +526,58 @@
                 colorAnim.setAttribute('attribute', 'color');
                 colorAnim.setAttribute('from', color);
                 colorAnim.setAttribute('to', fireColors[(index + 1) % fireColors.length]);
-                colorAnim.setAttribute('dur', '1500 + Math.random() * 1000');
+                colorAnim.setAttribute('dur', '2000 + Math.random() * 1000');
                 colorAnim.setAttribute('direction', 'alternate');
                 colorAnim.setAttribute('repeat', 'indefinite');
                 colorAnim.setAttribute('begin', Math.random() * 500 + 'ms');
+                colorAnim.setAttribute('easing', 'ease-in-out');
                 light.appendChild(colorAnim);
+                
+                // Додаткова анімація для плавності
+                const floatAnim = document.createElement('a-animation');
+                floatAnim.setAttribute('attribute', 'position');
+                floatAnim.setAttribute('from', light.getAttribute('position'));
+                const pos = light.getAttribute('position');
+                floatAnim.setAttribute('to', `${pos.x} ${pos.y + 0.02} ${pos.z}`);
+                floatAnim.setAttribute('dur', '1500 + Math.random() * 1000');
+                floatAnim.setAttribute('direction', 'alternate');
+                floatAnim.setAttribute('repeat', 'indefinite');
+                floatAnim.setAttribute('begin', Math.random() * 800 + 'ms');
+                floatAnim.setAttribute('easing', 'ease-in-out');
+                light.appendChild(floatAnim);
             });
-            
-            // Запускаємо бігаючі вогники, якщо налаштовано
-            if (settings.chasingEffect) {
-                startChasingLights();
-            }
             
             // Увімкнути снігопад, якщо налаштовано
             if (settings.snowEffect && snowContainer) {
                 snowContainer.setAttribute('visible', 'true');
             }
             
-            // Оновлюємо інформацію
-            voiceStatus.textContent = 'Гірлянда горить!';
-            voiceIndicator.classList.add('active');
-            
-            // Автоматичне вимкнення через 15 секунд
+            // Автоматичне вимкнення через 20 секунд
             clearTimeout(garlandTimeout);
             garlandTimeout = setTimeout(() => {
                 if (isGarlandOn) {
                     extinguishGarland();
-                    voiceStatus.textContent = 'Готовий до запалювання';
-                    voiceIndicator.classList.remove('active');
+                    showSpeechBubble("🔄 Скажи 'Ялиночка' знову!");
                 }
-            }, 15000);
-        }
-
-        // Функція зміни режиму підсвічування
-        function changeLightMode() {
-            console.log('🔄 Змінюємо режим підсвічування');
-            
-            const modes = [
-                { color: '#FFD700', intensity: 2 }, // Золота
-                { color: '#00FF00', intensity: 1.5 }, // Зелена
-                { color: '#FF0000', intensity: 2 }, // Червона
-                { color: '#00FFFF', intensity: 1.8 }, // Блакитна
-                { color: '#FF00FF', intensity: 2 } // Фіолетова
-            ];
-            
-            let currentMode = parseInt(localStorage.getItem('lightMode') || '0');
-            currentMode = (currentMode + 1) % modes.length;
-            localStorage.setItem('lightMode', currentMode);
-            
-            const mode = modes[currentMode];
-            garlandLight.setAttribute('color', mode.color);
-            garlandLight.setAttribute('intensity', mode.intensity);
-            ambientGlow.setAttribute('color', mode.color);
-            
-            // Змінюємо кольори вогників
-            lights.forEach(light => {
-                if (!light) return;
-                light.setAttribute('color', mode.color);
-                light.setAttribute('emissive', mode.color);
-                
-                // Оновлюємо анімацію кольору
-                const colorAnim = light.querySelector('a-animation[attribute="color"]');
-                if (colorAnim) {
-                    colorAnim.setAttribute('from', mode.color);
-                    // Трохи темніший відтінок для "to"
-                    const darkerColor = darkenColor(mode.color, 20);
-                    colorAnim.setAttribute('to', darkerColor);
-                }
-            });
-            
-            // Показуємо повідомлення
-            const modeNames = ['Золота', 'Зелена', 'Червона', 'Блакитна', 'Фіолетова'];
-            showSpeechBubble(`Режим: ${modeNames[currentMode]}`);
-        }
-
-        // Функція для затемнення кольору
-        function darkenColor(color, percent) {
-            const num = parseInt(color.slice(1), 16);
-            const amt = Math.round(2.55 * percent);
-            const R = (num >> 16) - amt;
-            const G = (num >> 8 & 0x00FF) - amt;
-            const B = (num & 0x0000FF) - amt;
-            return '#' + (0x1000000 + (R < 0 ? 0 : R > 255 ? 255 : R) * 0x10000 +
-                (G < 0 ? 0 : G > 255 ? 255 : G) * 0x100 +
-                (B < 0 ? 0 : B > 255 ? 255 : B)).toString(16).slice(1);
-        }
-
-        // Функція спецефектів
-        function triggerSpecialEffects() {
-            console.log('🎄 Активуємо спецефекти!');
-            
-            // Мерехтливі ефекти
-            let flashCount = 0;
-            const flashInterval = setInterval(() => {
-                if (flashCount >= 6) {
-                    clearInterval(flashInterval);
-                    return;
-                }
-                
-                // Швидке мерехтіння
-                garlandLight.setAttribute('intensity', flashCount % 2 === 0 ? '3' : '1');
-                flashCount++;
-            }, 200);
-            
-            // Зміна кольорів раптово
-            setTimeout(() => {
-                lights.forEach((light, index) => {
-                    if (!light) return;
-                    const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF'];
-                    light.setAttribute('color', colors[index % colors.length]);
-                    light.setAttribute('emissive', colors[index % colors.length]);
-                });
-            }, 1200);
-            
-            // Бігаючі вогники на високій швидкості
-            if (settings.chasingEffect) {
-                setTimeout(() => {
-                    const fastInterval = setInterval(() => {
-                        if (!isGarlandOn) {
-                            clearInterval(fastInterval);
-                            return;
-                        }
-                        
-                        lights.forEach((l, i) => {
-                            if (l) {
-                                const randomBright = Math.random() > 0.5 ? '5' : '1';
-                                l.setAttribute('emissive-intensity', randomBright);
-                            }
-                        });
-                    }, 100);
-                    
-                    // Зупинити через 3 секунди
-                    setTimeout(() => {
-                        clearInterval(fastInterval);
-                        if (isGarlandOn && settings.chasingEffect) {
-                            startChasingLights();
-                        }
-                    }, 3000);
-                }, 1500);
-            }
-            
-            // Посилити снігопад
-            if (settings.snowEffect && snowContainer) {
-                const particleSystem = snowContainer.querySelector('[particle-system]');
-                if (particleSystem) {
-                    particleSystem.setAttribute('particle-system', 'particleCount', '1200');
-                    particleSystem.setAttribute('particle-system', 'velocityValue', '0 0.8 0');
-                    
-                    setTimeout(() => {
-                        particleSystem.setAttribute('particle-system', 'particleCount', '600');
-                        particleSystem.setAttribute('particle-system', 'velocityValue', '0 0.4 0');
-                    }, 2000);
-                }
-            }
-            
-            showSpeechBubble('Новорічні спецефекти!');
+            }, 20000);
         }
 
         // Функція вимкнення гірлянди
         function extinguishGarland() {
             if (!isGarlandOn) return;
             
-            console.log('💡 Вимкнути гірлянду');
+            console.log('💡 Вимкнути ялиночку');
             isGarlandOn = false;
-            lightsBtn.textContent = '✨ Увімкнути';
+            lightsBtn.textContent = '🎄 Увімкнути ялиночку!';
             lightsBtn.classList.remove('active');
             
-            // Звук вимкнення
-            if (extinguishSound) {
-                extinguishSound.currentTime = 0;
-                extinguishSound.play().catch(e => console.log('Не вдалося відтворити звук'));
+            // Вібрація (якщо підтримується)
+            if (navigator.vibrate) {
+                navigator.vibrate([200]);
             }
             
             // Вимикаємо світло
             garlandLight.setAttribute('intensity', '0');
-            ambientGlow.setAttribute('intensity', '0');
-            
-            // Вимикаємо бігаючі вогники
-            if (chasingLightsInterval) {
-                clearInterval(chasingLightsInterval);
-                chasingLightsInterval = null;
-            }
             
             // Вимикаємо снігопад
             if (snowContainer) {
@@ -1088,112 +609,20 @@
 
         // Функція скидання UI
         function resetUI() {
-            musicBtn.textContent = '🎵 Музика';
-            musicBtn.classList.remove('active', 'off');
-            micBtn.textContent = '🎤 Розпізнавання';
-            micBtn.classList.remove('active', 'off');
-            lightsBtn.textContent = '✨ Увімкнути';
+            lightsBtn.textContent = '🎄 Увімкнути ялиночку!';
             lightsBtn.classList.remove('active');
-            settingsBtn.textContent = '⚙️ Налаштування';
-            settingsBtn.classList.remove('active');
-            
-            voiceStatus.textContent = 'Розпізнавання вимкнено';
-            voiceIndicator.classList.remove('active');
-            voiceIndicator.style.background = '#ff4444';
         }
 
-        // Обробник кнопки музики
-        musicBtn.addEventListener('click', () => {
-            if (bgMusic.paused) {
-                bgMusic.play()
-                    .then(() => {
-                        musicBtn.textContent = '🔇 Музика';
-                        musicBtn.classList.add('active');
-                        isMusicPlaying = true;
-                    })
-                    .catch(e => {
-                        console.log("🔇 Помилка музики:", e);
-                        musicBtn.textContent = '🎵 Помилка';
-                        musicBtn.classList.add('off');
-                    });
-            } else {
-                bgMusic.pause();
-                musicBtn.textContent = '🎵 Музика';
-                musicBtn.classList.remove('active');
-                isMusicPlaying = false;
-            }
-        });
-
-        // Обробник кнопки мікрофона
-        micBtn.addEventListener('click', () => {
-            if (!isSpeechRecognitionActive) {
-                startSpeechRecognition();
-            } else {
-                stopSpeechRecognition();
-            }
-        });
-
-        // Обробник кнопки вогнів
+        // Обробник кнопки
         lightsBtn.addEventListener('click', () => {
             if (!isGarlandOn) {
                 igniteGarland();
+                showSpeechBubble("✨ Ялиночка запалилася!");
             } else {
                 extinguishGarland();
+                showSpeechBubble("💤 Ялиночка згасла!");
             }
         });
-
-        // Обробник кнопки налаштувань
-        settingsBtn.addEventListener('click', () => {
-            const isShowing = settingsPanel.style.display === 'block';
-            settingsPanel.style.display = isShowing ? 'none' : 'block';
-            settingsBtn.classList.toggle('active', !isShowing);
-            settingsBtn.textContent = isShowing ? '⚙️ Налаштування' : '✖️ Закрити';
-        });
-
-        // Обробники слайдерів
-        sensitivitySlider.addEventListener('input', (e) => {
-            settings.sensitivity = parseInt(e.target.value);
-            sensitivityValue.textContent = settings.sensitivity;
-        });
-
-        heightSlider.addEventListener('input', (e) => {
-            const cmValue = parseInt(e.target.value);
-            settings.height = cmValue / 100; // Конвертуємо см в метри (1-50см → 0.01-0.5м)
-            heightValue.textContent = cmValue + ' см';
-        });
-
-        sizeSlider.addEventListener('input', (e) => {
-            settings.size = parseInt(e.target.value) / 100; // Конвертуємо % в 0.1-2.0
-            sizeValue.textContent = Math.round(settings.size * 100) + '%';
-        });
-
-        // Обробники радіо-кнопок типу маркера
-        markerTypeRadios.forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                settings.markerType = e.target.value;
-            });
-        });
-
-        // Обробники чекбоксів ефектів
-        chasingEffectCheckbox.addEventListener('change', (e) => {
-            settings.chasingEffect = e.target.checked;
-            if (isGarlandOn && settings.chasingEffect) {
-                startChasingLights();
-            } else if (chasingLightsInterval) {
-                clearInterval(chasingLightsInterval);
-                chasingLightsInterval = null;
-            }
-        });
-
-        snowEffectCheckbox.addEventListener('change', (e) => {
-            settings.snowEffect = e.target.checked;
-            if (snowContainer) {
-                snowContainer.setAttribute('visible', settings.snowEffect && isGarlandOn);
-            }
-        });
-
-        // Обробник кнопки застосування налаштувань
-        applySettingsBtn.addEventListener('click', applySettings);
 
         // Клавіатурне управління
         document.addEventListener('keydown', (e) => {
@@ -1201,21 +630,16 @@
                 if (!lightsBtn.disabled) {
                     if (!isGarlandOn) {
                         igniteGarland();
+                        showSpeechBubble("✨ Ялиночка запалилася!");
                     } else {
                         extinguishGarland();
+                        showSpeechBubble("💤 Ялиночка згасла!");
                     }
                 }
-            } else if (e.key === 'm' || e.key === 'M') { // M - музика
-                musicBtn.click();
-            } else if (e.key === 's' || e.key === 'S') { // S - налаштування
-                settingsBtn.click();
-            } else if (e.key === 'v' || e.key === 'V') { // V - голос
-                micBtn.click();
-            } else if (e.key === 'c' || e.key === 'C') { // C - бігаючі вогники
-                settings.chasingEffect = !settings.chasingEffect;
-                chasingEffectCheckbox.checked = settings.chasingEffect;
-                if (isGarlandOn && settings.chasingEffect) {
-                    startChasingLights();
+            } else if (e.key === 'я' || e.key === 'Я') { // Клавіша Я
+                if (!isGarlandOn && !lightsBtn.disabled) {
+                    igniteGarland();
+                    showSpeechBubble("✨ Ялиночка запалилася!");
                 }
             }
         });
@@ -1224,33 +648,15 @@
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 // Приховуємо вкладку - вимикаємо все
-                if (isSpeechRecognitionActive) {
-                    stopSpeechRecognition();
-                }
-                if (bgMusic && !bgMusic.paused) {
-                    bgMusic.pause();
-                }
+                stopMicrophone();
                 stopGarland();
             }
         });
 
         // Автоматичне вимкнення при закритті
         window.addEventListener('beforeunload', () => {
-            stopSpeechRecognition();
+            stopMicrophone();
             stopGarland();
-            if (bgMusic) bgMusic.pause();
-        });
-
-        // Обробники музики
-        bgMusic.addEventListener('canplay', () => {
-            console.log('🎵 Музика готова');
-        });
-
-        bgMusic.addEventListener('error', (e) => {
-            console.error('Помилка музики:', e);
-            musicBtn.textContent = '🎵 Немає файлу';
-            musicBtn.classList.add('off');
-            musicBtn.disabled = true;
         });
 
         // Адаптивність
@@ -1261,8 +667,14 @@
         window.addEventListener('resize', fixHeight);
 
         // Ініціалізація
-        console.log('🚀 AR Гірлянда завантажена!');
-        updateSliderValues();
+        console.log('🚀 AR Ялиночка завантажена!');
+        
+        // Додаємо затримку для першого сповіщення
+        setTimeout(() => {
+            if (loader.style.display !== 'none') {
+                showSpeechBubble("📱 Наведи камеру на маркер з ялиночкою!");
+            }
+        }, 3000);
     </script>
 </body>
 </html>

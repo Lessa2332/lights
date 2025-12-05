@@ -12,8 +12,6 @@
     <!-- MindAR для AR-розпізнавання -->
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
-    <!-- Particle System для снігу - ВИДАЛЕНО, робимо власний сніг -->
-
     <style>
         html, body {
             margin: 0;
@@ -137,6 +135,31 @@
             min-width: 200px;
         }
 
+        /* Регулятор калібрування (прихований за замовчуванням) */
+        .calibration-panel {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+            z-index: 10002;
+            display: none;
+        }
+
+        .calibration-btn {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: monospace;
+        }
+
         @media (max-width: 768px) {
             .simple-btn { padding: 16px 35px; font-size: 1.1em; bottom: 25px; }
             .speech-bubble { font-size: 1.1em; top: 40px; }
@@ -164,18 +187,37 @@
 <body>
     <div class="loader" id="loader">
         <div class="pulse">🎄</div>
-        <h1>Ялиночка</h1>
+        <h1>Ялиночка на долоні</h1>
         <p>Наведи камеру на ялинку</p>
         <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.7;">Чекай, завантажується...</p>
     </div>
     
     <div class="speech-bubble" id="speech-bubble"></div>
     
+    <!-- Панель калібрування для Android (прихована) -->
+    <div class="calibration-panel" id="calibration-panel">
+        <div style="margin-bottom: 10px; font-weight: bold;">🔧 Калібрування Android</div>
+        <div>X: <button class="calibration-btn" data-axis="x" data-dir="-">-</button> 
+             <span id="pos-x">0.00</span>
+             <button class="calibration-btn" data-axis="x" data-dir="+">+</button></div>
+        <div>Y: <button class="calibration-btn" data-axis="y" data-dir="-">-</button> 
+             <span id="pos-y">0.00</span>
+             <button class="calibration-btn" data-axis="y" data-dir="+">+</button></div>
+        <div>Z: <button class="calibration-btn" data-axis="z" data-dir="-">-</button> 
+             <span id="pos-z">0.02</span>
+             <button class="calibration-btn" data-axis="z" data-dir="+">+</button></div>
+        <div>Scale: <button class="calibration-btn" data-axis="scale" data-dir="-">-</button> 
+             <span id="scale-val">1.0</span>
+             <button class="calibration-btn" data-axis="scale" data-dir="+">+</button></div>
+        <button id="save-calibration" style="margin-top: 10px; background: #4CAF50;">💾 Зберегти</button>
+        <button id="reset-calibration" style="margin-top: 5px; background: #f44336;">🔄 Скинути</button>
+    </div>
+    
     <!-- Контейнер для сніжинок -->
     <div id="snow-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: none;"></div>
 
     <a-scene
-        mindar-image="imageTargetSrc: marcher.mind; filterMinCF:0.0001; filterBeta:0.001"
+        mindar-image="imageTargetSrc: marcher.mind; filterMinCF:0.0001; filterBeta:0.001; missTolerance:5; warmupTolerance:5"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
         loading-screen="enabled: false"
@@ -194,8 +236,8 @@
             look-controls="enabled: true"
         ></a-camera>
 
-        <a-entity mindar-image-target="targetIndex: 0; targetWidth: 0.148">
-            <!-- ФІКС ДЛЯ ANDROID: targetWidth: 0.148 (ширина А5 у метрах) -->
+        <a-entity mindar-image-target="targetIndex: 0">
+            <!-- ГАРАНТОВАНИЙ ФІКС ДЛЯ ANDROID -->
             <a-entity id="garland-container" position="0 0 0.02" scale="1 1 1" rotation="0 0 0">
                 <!-- Гірлянда — 13 кульок у зигзаг-формі -->
                 <a-sphere class="garland-light" position="0.00  0.30  0.002" radius="0.04"
@@ -248,6 +290,7 @@
     <script>
         const loader = document.getElementById('loader');
         const speechBubble = document.getElementById('speech-bubble');
+        const calibrationPanel = document.getElementById('calibration-panel');
         const targetEntity = document.querySelector('[mindar-image-target]');
         const garlandContainer = document.getElementById('garland-container');
         const simpleSnow = document.getElementById('simple-snow');
@@ -259,6 +302,14 @@
         const lights = Array.from(document.querySelectorAll('.garland-light'));
         const snowParticles = Array.from(document.querySelectorAll('.snow-particle'));
         
+        // Змінні калібрування
+        let calibration = {
+            x: 0,
+            y: 0,
+            z: 0.02,
+            scale: 1.0
+        };
+        
         let isGarlandOn = false;
         let garlandTimeout = null;
         let speechRecognition = null;
@@ -267,6 +318,47 @@
         let flickerIntervals = [];
         let snowAnimations = [];
         let snowInterval = null;
+        let isAndroid = /Android/.test(navigator.userAgent);
+
+        // Завантажуємо збережену калібрування
+        function loadCalibration() {
+            const saved = localStorage.getItem('ar_garland_calibration');
+            if (saved) {
+                try {
+                    calibration = JSON.parse(saved);
+                    updateCalibrationDisplay();
+                    applyCalibration();
+                } catch(e) {
+                    console.log('Не вдалося завантажити калібрування');
+                }
+            }
+        }
+
+        function saveCalibration() {
+            localStorage.setItem('ar_garland_calibration', JSON.stringify(calibration));
+        }
+
+        function updateCalibrationDisplay() {
+            document.getElementById('pos-x').textContent = calibration.x.toFixed(2);
+            document.getElementById('pos-y').textContent = calibration.y.toFixed(2);
+            document.getElementById('pos-z').textContent = calibration.z.toFixed(2);
+            document.getElementById('scale-val').textContent = calibration.scale.toFixed(1);
+        }
+
+        function applyCalibration() {
+            if (garlandContainer) {
+                garlandContainer.setAttribute('position', {
+                    x: calibration.x,
+                    y: calibration.y,
+                    z: calibration.z
+                });
+                garlandContainer.setAttribute('scale', {
+                    x: calibration.scale,
+                    y: calibration.scale,
+                    z: calibration.scale
+                });
+            }
+        }
 
         // Власна система снігопаду
         function createSnowflakes() {
@@ -561,11 +653,23 @@
             lightsBtn.classList.remove('active');
         }
 
+        // Завантажуємо калібрування на початку
+        loadCalibration();
+
         if (targetEntity) {
             targetEntity.addEventListener('targetFound', () => {
                 loader.style.display = 'none';
                 if (garlandContainer) garlandContainer.setAttribute('visible', 'true');
                 lightsBtn.disabled = false;
+                
+                // Застосовуємо калібрування
+                applyCalibration();
+                
+                // Показуємо панель калібрування тільки на Android
+                if (isAndroid) {
+                    calibrationPanel.style.display = 'block';
+                    showSpeechBubble("На Android? Скористайся регулятором зверху!");
+                }
                 
                 // ФІКС ДЛЯ iOS: голос блокується до першого тапу
                 if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
@@ -588,6 +692,7 @@
                 stopSpeechRecognition();
                 loader.style.display = 'flex';
                 speechBubble.style.display = 'none';
+                calibrationPanel.style.display = 'none';
                 resetUI();
                 lightsBtn.disabled = true;
                 isGarlandOn = false;
@@ -607,6 +712,57 @@
             } else {
                 extinguishGarland();
                 showSpeechBubble("💤 Ялиночка згасла!");
+            }
+        });
+
+        // Обробка кнопок калібрування
+        document.querySelectorAll('.calibration-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const axis = this.getAttribute('data-axis');
+                const dir = this.getAttribute('data-dir');
+                const step = axis === 'scale' ? 0.1 : 0.005;
+                
+                if (dir === '+') {
+                    calibration[axis] += step;
+                } else {
+                    calibration[axis] -= step;
+                }
+                
+                updateCalibrationDisplay();
+                applyCalibration();
+            });
+        });
+
+        document.getElementById('save-calibration').addEventListener('click', () => {
+            saveCalibration();
+            showSpeechBubble("Калібрування збережено!");
+        });
+
+        document.getElementById('reset-calibration').addEventListener('click', () => {
+            calibration = { x: 0, y: 0, z: 0.02, scale: 1.0 };
+            updateCalibrationDisplay();
+            applyCalibration();
+            localStorage.removeItem('ar_garland_calibration');
+            showSpeechBubble("Калібрування скинуто!");
+        });
+
+        // Секретна комбінація для показу панелі на iOS
+        let tapCount = 0;
+        let lastTap = 0;
+        document.addEventListener('click', (e) => {
+            if (e.target === document.body || e.target === document.documentElement) {
+                const now = Date.now();
+                if (now - lastTap < 500) {
+                    tapCount++;
+                    if (tapCount >= 3) {
+                        calibrationPanel.style.display = 'block';
+                        showSpeechBubble("Секретна панель калібрування!");
+                        tapCount = 0;
+                    }
+                } else {
+                    tapCount = 1;
+                }
+                lastTap = now;
             }
         });
 
@@ -646,6 +802,7 @@
         window.addEventListener('resize', fixHeight);
 
         console.log('🚀 Ялиночка завантажена!');
+        console.log('📱 Пристрій:', isAndroid ? 'Android' : 'iOS/інший');
         setTimeout(() => {
             if (loader.style.display !== 'none') {
                 showSpeechBubble("📱 Наведи камеру на ялинку!");
@@ -654,4 +811,3 @@
     </script>
 </body>
 </html>
-

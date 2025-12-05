@@ -160,10 +160,8 @@
     
     <div class="speech-bubble" id="speech-bubble"></div>
 
-    <!-- Сцена з targetWidth: 0.148 (А5) -->
     <a-scene
         mindar-image="imageTargetSrc: marcher.mind; filterMinCF:0.0001; filterBeta:0.001"
-        mindar-image-target="targetWidth: 0.148"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
         loading-screen="enabled: false"
@@ -174,7 +172,8 @@
             <audio id="ignite-sound" preload="auto">
                 <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
             </audio>
-            <img id="snow-texture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVFhH7dYxCsJAEEDRjSefQPAE9gZewQt4Ay+gnaewF7CwFbGxsIiIiIj4/7A7s5tkQ0KMcQpfeZnJJgUhhBBCCCGEEEIIIYTQf6q15pxzzrnWWkoppZRSSiml1lq/1VqRUkoppZRSSi2l5JxzzjnnnHPOeecc84555xzzjnHGGENKKWUkoppZRSSq211lprKaWUUkrOOeecc84555xzzjnnnHPOeecc84555xzzjnHGGMIIYQQQgghhBBCCCGEEPrG8wFzgxhF8I/2xQAAAABJRU5ErkJggg==" />
+            <!-- Текстура для снігу (не обов’язково, але іноді потрібна) -->
+            <img id="snow-texture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVFhH7dYxCsJAEEDRjSefQPAE9gZewQt4Ay+gnaewF7CwFbGxsIiIiIj4/7A7s5tkQ0KMcQpfeZnJJgUhhBBCCCGEEEIIIYTQf6q15pxzzjnnWmsppZRSSimllFpr/VZrRUoppZRSSim1lJJzzjnnnHPOOeecc84555xzzjnnnHPOMcYYQ0opZSSiSilFKSWllFprrbWWUkoppZScc84555xzzjnnnHPOOeecc84555xzzjnnnHPOMcYYQwghhBBCCCGEEEIIIYQQQugbzwfMDWIUwT/aFwAAAABJRU5ErkJggg==" />
         </a-assets>
 
         <a-camera
@@ -183,8 +182,9 @@
             look-controls="enabled: true"
         ></a-camera>
 
-        <a-entity mindar-image-target="targetIndex: 0">
-            <a-entity id="garland-container" rotation="0 0 0" position="0 0.005 0.015" scale="1 1 1">
+        <a-entity mindar-image-target="targetIndex: 0; targetWidth: 0.148">
+            <!-- ФІКС ДЛЯ ANDROID: targetWidth: 0.148 (ширина А5 у метрах) -->
+            <a-entity id="garland-container" position="0 0 0.02" scale="1 1 1" rotation="0 0 0">
                 <!-- Гірлянда — 13 кульок у зигзаг-формі -->
                 <a-sphere class="garland-light" position="0.00  0.30  0.002" radius="0.04"
                           material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
@@ -446,21 +446,25 @@
             lightsBtn.classList.remove('active');
         }
 
-        // Перевірка платформи
-        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-
         if (targetEntity) {
             targetEntity.addEventListener('targetFound', () => {
                 loader.style.display = 'none';
                 if (garlandContainer) garlandContainer.setAttribute('visible', 'true');
                 lightsBtn.disabled = false;
                 
-                if (isIOS) {
+                // ФІКС ДЛЯ iOS: голос блокується до першого тапу
+                if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
                     showSpeechBubble("Натисни кнопку і скажи «Ялиночка!»");
-                    lightsBtn.textContent = "👉 Натисни і говори!";
+                    lightsBtn.textContent = "Натисни і говори!";
                 } else {
-                    setTimeout(startSpeechRecognition, 1000);
+                    setTimeout(() => {
+                        if (!isSpeechActive) startSpeechRecognition();
+                    }, 1000);
                 }
+                
+                setTimeout(() => {
+                    showSpeechBubble("🎄 Тримай маркер на долоні!");
+                }, 1500);
             });
 
             targetEntity.addEventListener('targetLost', () => {
@@ -476,7 +480,12 @@
         }
 
         lightsBtn.addEventListener('click', () => {
-            if (!isSpeechActive) startSpeechRecognition(); // Для iOS — активуємо голос після тапу
+            // ФІКС ДЛЯ iOS: активуємо голос при першому натисканні
+            if (!isSpeechActive && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                startSpeechRecognition();
+                return;
+            }
+            
             if (!isGarlandOn) {
                 igniteGarland();
                 showSpeechBubble("✨ Ялиночка запалилася!");

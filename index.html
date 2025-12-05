@@ -6,9 +6,15 @@
     <meta name="description" content="AR ялиночка на долоні для дітей">
     <title>🎄 Ялиночка</title>
 
+    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
+    <!-- MindAR для AR-розпізнавання -->
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    
+
+    <!-- Particle System для снігу -->
+    <script src="https://unpkg.com/aframe-particle-system-component@1.1.2/dist/aframe-particle-system-component.min.js"></script>
+
     <style>
         html, body {
             margin: 0;
@@ -154,8 +160,10 @@
     
     <div class="speech-bubble" id="speech-bubble"></div>
 
+    <!-- Сцена з targetWidth: 0.148 (А5) -->
     <a-scene
-        mindar-image="imageTargetSrc: marcher.mind;"
+        mindar-image="imageTargetSrc: marcher.mind; filterMinCF:0.0001; filterBeta:0.001"
+        mindar-image-target="targetWidth: 0.148"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
         loading-screen="enabled: false"
@@ -166,6 +174,7 @@
             <audio id="ignite-sound" preload="auto">
                 <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
             </audio>
+            <img id="snow-texture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVFhH7dYxCsJAEEDRjSefQPAE9gZewQt4Ay+gnaewF7CwFbGxsIiIiIj4/7A7s5tkQ0KMcQpfeZnJJgUhhBBCCCGEEEIIIYTQf6q15pxzzrnWWkoppZRSSiml1lq/1VqRUkoppZRSSi2l5JxzzjnnnHPOeecc84555xzzjnHGGENKKWUkoppZRSSq211lprKaWUUkrOOeecc84555xzzjnnnHPOeecc84555xzzjnHGGMIIYQQQgghhBBCCCGEEPrG8wFzgxhF8I/2xQAAAABJRU5ErkJggg==" />
         </a-assets>
 
         <a-camera
@@ -175,26 +184,41 @@
         ></a-camera>
 
         <a-entity mindar-image-target="targetIndex: 0">
-            <a-entity id="garland-container" rotation="0 0 0" position="0 0 0" scale="1 1 1">
+            <a-entity id="garland-container" rotation="0 0 0" position="0 0.005 0.015" scale="1 1 1">
                 <!-- Гірлянда — 13 кульок у зигзаг-формі -->
-                <a-sphere class="garland-light" position="0.00  0.30  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="0.06  0.25  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="-0.06 0.20  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="0.08  0.15  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="-0.08 0.10  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="0.10  0.05  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="-0.10 0.00  0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="0.10  -0.05 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="-0.10 -0.10 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="0.09  -0.15 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="-0.09 -0.20 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="0.07  -0.25 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
-                <a-sphere class="garland-light" position="-0.07 -0.30 0.002" radius="0.04" color="#000000" opacity="0.3" transparent="true" emissive="#000000" emissive-intensity="0"></a-sphere>
+                <a-sphere class="garland-light" position="0.00  0.30  0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="0.06  0.25  0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="-0.06 0.20  0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="0.08  0.15  0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="-0.08 0.10  0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="0.10  0.05  0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="-0.10 0.00  0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="0.10  -0.05 0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="-0.10 -0.10 0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="0.09  -0.15 0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="-0.09 -0.20 0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="0.07  -0.25 0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
+                <a-sphere class="garland-light" position="-0.07 -0.30 0.002" radius="0.04"
+                          material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
 
+                <!-- Снігопад -->
                 <a-entity id="snow-container" position="0 0.4 0" visible="false">
                     <a-entity particle-system="preset: snow; particleCount: 200; color: #fff,#eee; size: 0.01 0.03; opacity: 0.6; velocityValue: 0 0.2 0; velocitySpread: 0.6 0.15 0.6; accelerationValue: 0 -0.6 0;"></a-entity>
                 </a-entity>
 
+                <!-- Центральне світло -->
                 <a-light id="garland-light" type="point" intensity="0" color="#ffaa33" distance="1.5" decay="1" position="0 0.1 0.002"></a-light>
             </a-entity>
         </a-entity>
@@ -219,7 +243,7 @@
         let speechRecognition = null;
         let isSpeechActive = false;
         let isRecognitionStarting = false;
-        let waveTimeouts = [];
+        let flickerIntervals = [];
 
         function showSpeechBubble(text) {
             speechBubble.textContent = text;
@@ -346,48 +370,34 @@
 
             const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff8800', '#ff00ff', '#00ffff'];
             
-            // Очистити попередні таймери
-            waveTimeouts.forEach(t => clearTimeout(t));
-            waveTimeouts = [];
+            extinguishGarlandNoUI();
 
-            // Запалювати кульки послідовно (хвилею)
             lights.forEach((light, index) => {
                 if (!light) return;
-                const delay = index * 150; // кожна кулька через 150 мс
-
-                const timeout = setTimeout(() => {
+                setTimeout(() => {
                     if (!isGarlandOn || !light) return;
 
                     const color = colors[index % colors.length];
-                    light.setAttribute('color', color);
-                    light.setAttribute('emissive', color);
-                    light.setAttribute('opacity', 1);
-                    light.setAttribute('emissive-intensity', 2);
+                    light.setAttribute('material', {
+                        color: color,
+                        emissive: color,
+                        emissiveIntensity: 2,
+                        transparent: true,
+                        opacity: 1
+                    });
 
-                    // Мерехтіння
-                    const flicker = document.createElement('a-animation');
-                    flicker.setAttribute('attribute', 'emissive-intensity');
-                    flicker.setAttribute('from', '1.5');
-                    flicker.setAttribute('to', '3.5');
-                    flicker.setAttribute('dur', 300 + Math.random() * 200);
-                    flicker.setAttribute('direction', 'alternate');
-                    flicker.setAttribute('repeat', 'indefinite');
-                    flicker.setAttribute('easing', 'ease-in-out');
-                    light.appendChild(flicker);
+                    const interval = setInterval(() => {
+                        if (!isGarlandOn || !light) {
+                            clearInterval(interval);
+                            return;
+                        }
+                        const intense = 1.5 + Math.random() * 1.5;
+                        light.setAttribute('material', 'emissiveIntensity', intense);
+                    }, 200 + Math.random() * 300);
 
-                    // Пульсація (легка)
-                    const pulse = document.createElement('a-animation');
-                    pulse.setAttribute('attribute', 'scale');
-                    pulse.setAttribute('from', '1 1 1');
-                    pulse.setAttribute('to', '1.3 1.3 1.3');
-                    pulse.setAttribute('dur', 1000 + Math.random() * 500);
-                    pulse.setAttribute('direction', 'alternate');
-                    pulse.setAttribute('repeat', 'indefinite');
-                    pulse.setAttribute('easing', 'ease-in-out');
-                    light.appendChild(pulse);
+                    flickerIntervals.push(interval);
 
-                }, delay);
-                waveTimeouts.push(timeout);
+                }, index * 180);
             });
 
             if (snowContainer) snowContainer.setAttribute('visible', 'true');
@@ -401,6 +411,21 @@
             }, 25000);
         }
 
+        function extinguishGarlandNoUI() {
+            flickerIntervals.forEach(id => clearInterval(id));
+            flickerIntervals = [];
+            
+            lights.forEach(light => {
+                if (!light) return;
+                light.setAttribute('material', {
+                    color: '#000000',
+                    emissive: '#000000',
+                    emissiveIntensity: 0,
+                    opacity: 0.3
+                });
+            });
+        }
+
         function extinguishGarland() {
             if (!isGarlandOn) return;
             isGarlandOn = false;
@@ -408,19 +433,7 @@
             lightsBtn.classList.remove('active');
             garlandLight.setAttribute('intensity', '0');
             if (snowContainer) snowContainer.setAttribute('visible', 'false');
-            
-            waveTimeouts.forEach(t => clearTimeout(t));
-            waveTimeouts = [];
-
-            lights.forEach(light => {
-                if (!light) return;
-                light.setAttribute('opacity', '0.3');
-                light.setAttribute('color', '#000000');
-                light.setAttribute('emissive', '#000000');
-                light.setAttribute('emissive-intensity', '0');
-                light.setAttribute('scale', '1 1 1');
-                light.querySelectorAll('a-animation').forEach(a => a.remove());
-            });
+            extinguishGarlandNoUI();
             clearTimeout(garlandTimeout);
         }
 
@@ -433,17 +446,21 @@
             lightsBtn.classList.remove('active');
         }
 
+        // Перевірка платформи
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
         if (targetEntity) {
             targetEntity.addEventListener('targetFound', () => {
                 loader.style.display = 'none';
                 if (garlandContainer) garlandContainer.setAttribute('visible', 'true');
                 lightsBtn.disabled = false;
-                setTimeout(() => {
-                    if (!isSpeechActive) startSpeechRecognition();
-                }, 1000);
-                setTimeout(() => {
-                    showSpeechBubble("🎄 Тримай маркер на долоні!");
-                }, 1500);
+                
+                if (isIOS) {
+                    showSpeechBubble("Натисни кнопку і скажи «Ялиночка!»");
+                    lightsBtn.textContent = "👉 Натисни і говори!";
+                } else {
+                    setTimeout(startSpeechRecognition, 1000);
+                }
             });
 
             targetEntity.addEventListener('targetLost', () => {
@@ -459,6 +476,7 @@
         }
 
         lightsBtn.addEventListener('click', () => {
+            if (!isSpeechActive) startSpeechRecognition(); // Для iOS — активуємо голос після тапу
             if (!isGarlandOn) {
                 igniteGarland();
                 showSpeechBubble("✨ Ялиночка запалилася!");

@@ -12,8 +12,7 @@
     <!-- MindAR для AR-розпізнавання -->
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
-    <!-- Particle System для снігу -->
-    <script src="https://unpkg.com/aframe-particle-system-component@1.1.2/dist/aframe-particle-system-component.min.js"></script>
+    <!-- Particle System для снігу - ВИДАЛЕНО, робимо власний сніг -->
 
     <style>
         html, body {
@@ -148,6 +147,18 @@
             .loader h1 { font-size: 1.5em; }
             .pulse { font-size: 3em; }
         }
+        
+        /* Сніжинки */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 0 5px white;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -159,6 +170,9 @@
     </div>
     
     <div class="speech-bubble" id="speech-bubble"></div>
+    
+    <!-- Контейнер для сніжинок -->
+    <div id="snow-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: none;"></div>
 
     <a-scene
         mindar-image="imageTargetSrc: marcher.mind; filterMinCF:0.0001; filterBeta:0.001"
@@ -172,8 +186,6 @@
             <audio id="ignite-sound" preload="auto">
                 <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
             </audio>
-            <!-- Текстура для снігу (не обов’язково, але іноді потрібна) -->
-            <img id="snow-texture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVFhH7dYxCsJAEEDRjSefQPAE9gZewQt4Ay+gnaewF7CwFbGxsIiIiIj4/7A7s5tkQ0KMcQpfeZnJJgUhhBBCCCGEEEIIIYTQf6q15pxzzjnnWmsppZRSSimllFpr/VZrRUoppZRSSim1lJJzzjnnnHPOOeecc84555xzzjnnnHPOMcYYQ0opZSSiSilFKSWllFprrbWWUkoppZScc84555xzzjnnnHPOOeecc84555xzzjnnnHPOMcYYQwghhBBCCCGEEEIIIYQQQugbzwfMDWIUwT/aFwAAAABJRU5ErkJggg==" />
         </a-assets>
 
         <a-camera
@@ -213,9 +225,16 @@
                 <a-sphere class="garland-light" position="-0.07 -0.30 0.002" radius="0.04"
                           material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
 
-                <!-- Снігопад -->
-                <a-entity id="snow-container" position="0 0.4 0" visible="false">
-                    <a-entity particle-system="preset: snow; particleCount: 200; color: #fff,#eee; size: 0.01 0.03; opacity: 0.6; velocityValue: 0 0.2 0; velocitySpread: 0.6 0.15 0.6; accelerationValue: 0 -0.6 0;"></a-entity>
+                <!-- Простий снігопад -->
+                <a-entity id="simple-snow" visible="false">
+                    <!-- Кілька маленьких сфер для снігу -->
+                    <a-sphere class="snow-particle" position="-0.15 0.4 0" radius="0.008" material="color: white; opacity: 0.7"></a-sphere>
+                    <a-sphere class="snow-particle" position="-0.1 0.5 0.05" radius="0.006" material="color: white; opacity: 0.6"></a-sphere>
+                    <a-sphere class="snow-particle" position="0.05 0.45 -0.05" radius="0.007" material="color: white; opacity: 0.8"></a-sphere>
+                    <a-sphere class="snow-particle" position="0.12 0.35 0.03" radius="0.005" material="color: white; opacity: 0.5"></a-sphere>
+                    <a-sphere class="snow-particle" position="-0.18 0.55 -0.02" radius="0.009" material="color: white; opacity: 0.6"></a-sphere>
+                    <a-sphere class="snow-particle" position="0.2 0.4 0.04" radius="0.007" material="color: white; opacity: 0.7"></a-sphere>
+                    <a-sphere class="snow-particle" position="0.0 0.6 -0.03" radius="0.006" material="color: white; opacity: 0.5"></a-sphere>
                 </a-entity>
 
                 <!-- Центральне світло -->
@@ -231,12 +250,14 @@
         const speechBubble = document.getElementById('speech-bubble');
         const targetEntity = document.querySelector('[mindar-image-target]');
         const garlandContainer = document.getElementById('garland-container');
+        const simpleSnow = document.getElementById('simple-snow');
         const snowContainer = document.getElementById('snow-container');
         const lightsBtn = document.getElementById('lights-btn');
         const garlandLight = document.getElementById('garland-light');
         const igniteSound = document.getElementById('ignite-sound');
         
         const lights = Array.from(document.querySelectorAll('.garland-light'));
+        const snowParticles = Array.from(document.querySelectorAll('.snow-particle'));
         
         let isGarlandOn = false;
         let garlandTimeout = null;
@@ -244,6 +265,70 @@
         let isSpeechActive = false;
         let isRecognitionStarting = false;
         let flickerIntervals = [];
+        let snowAnimations = [];
+        let snowInterval = null;
+
+        // Власна система снігопаду
+        function createSnowflakes() {
+            const container = document.getElementById('snow-container');
+            container.innerHTML = '';
+            
+            const snowflakeCount = 50;
+            const snowflakes = [];
+            
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                
+                const size = 2 + Math.random() * 5;
+                const left = Math.random() * 100;
+                const opacity = 0.3 + Math.random() * 0.7;
+                const fallDuration = 5 + Math.random() * 10;
+                const swayDuration = 3 + Math.random() * 4;
+                const swayDistance = 10 + Math.random() * 30;
+                
+                snowflake.style.width = `${size}px`;
+                snowflake.style.height = `${size}px`;
+                snowflake.style.left = `${left}%`;
+                snowflake.style.opacity = `${opacity}`;
+                
+                container.appendChild(snowflake);
+                snowflakes.push(snowflake);
+                
+                // Анімація падіння
+                snowflake.animate([
+                    { transform: `translateY(-20px) translateX(0px)`, opacity: 0 },
+                    { transform: `translateY(${window.innerHeight + 20}px) translateX(${swayDistance}px)`, opacity: opacity }
+                ], {
+                    duration: fallDuration * 1000,
+                    easing: 'linear',
+                    iterations: Infinity
+                });
+                
+                // Додаткова анімація хитавиці
+                snowflake.animate([
+                    { transform: `translateX(0px)` },
+                    { transform: `translateX(${swayDistance}px)` },
+                    { transform: `translateX(0px)` }
+                ], {
+                    duration: swayDuration * 1000,
+                    easing: 'ease-in-out',
+                    iterations: Infinity
+                });
+            }
+        }
+
+        function startSnowfall() {
+            const container = document.getElementById('snow-container');
+            container.style.display = 'block';
+            createSnowflakes();
+        }
+
+        function stopSnowfall() {
+            const container = document.getElementById('snow-container');
+            container.style.display = 'none';
+            container.innerHTML = '';
+        }
 
         function showSpeechBubble(text) {
             speechBubble.textContent = text;
@@ -400,7 +485,36 @@
                 }, index * 180);
             });
 
-            if (snowContainer) snowContainer.setAttribute('visible', 'true');
+            // Запускаємо снігопад
+            if (simpleSnow) simpleSnow.setAttribute('visible', 'true');
+            startSnowfall();
+            
+            // Анімація сніжинок в A-Frame
+            snowParticles.forEach(particle => {
+                if (!particle) return;
+                particle.setAttribute('material', 'opacity', 0.7);
+                
+                const animate = () => {
+                    if (!isGarlandOn) return;
+                    const pos = particle.getAttribute('position');
+                    const newY = pos.y - 0.01;
+                    if (newY < -0.5) {
+                        particle.setAttribute('position', {
+                            x: pos.x,
+                            y: 0.6,
+                            z: pos.z
+                        });
+                    } else {
+                        particle.setAttribute('position', {
+                            x: pos.x + Math.sin(Date.now() * 0.001 + pos.x) * 0.001,
+                            y: newY,
+                            z: pos.z + Math.cos(Date.now() * 0.001 + pos.z) * 0.001
+                        });
+                    }
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            });
 
             clearTimeout(garlandTimeout);
             garlandTimeout = setTimeout(() => {
@@ -432,7 +546,8 @@
             lightsBtn.textContent = '🎄 Скажи "Ялиночка!"';
             lightsBtn.classList.remove('active');
             garlandLight.setAttribute('intensity', '0');
-            if (snowContainer) snowContainer.setAttribute('visible', 'false');
+            if (simpleSnow) simpleSnow.setAttribute('visible', 'false');
+            stopSnowfall();
             extinguishGarlandNoUI();
             clearTimeout(garlandTimeout);
         }

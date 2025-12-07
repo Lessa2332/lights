@@ -6,10 +6,7 @@
     <meta name="description" content="AR ялиночка на долоні для дітей">
     <title>🎄 Ялиночка</title>
 
-    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-
-    <!-- MindAR для AR-розпізнавання -->
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
     <style>
@@ -135,31 +132,6 @@
             min-width: 200px;
         }
 
-        /* Регулятор калібрування (прихований за замовчуванням) */
-        .calibration-panel {
-            position: absolute;
-            top: 100px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #ffd700;
-            z-index: 10002;
-            display: none;
-        }
-
-        .calibration-btn {
-            background: #444;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            margin: 2px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: monospace;
-        }
-
         @media (max-width: 768px) {
             .simple-btn { padding: 16px 35px; font-size: 1.1em; bottom: 25px; }
             .speech-bubble { font-size: 1.1em; top: 40px; }
@@ -169,18 +141,6 @@
             .simple-btn { padding: 14px 30px; font-size: 1em; bottom: 20px; width: 90%; max-width: 300px; }
             .loader h1 { font-size: 1.5em; }
             .pulse { font-size: 3em; }
-        }
-        
-        /* Сніжинки */
-        .snowflake {
-            position: absolute;
-            top: -10px;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 0;
-            box-shadow: 0 0 5px white;
-            z-index: 1000;
         }
     </style>
 </head>
@@ -193,31 +153,10 @@
     </div>
     
     <div class="speech-bubble" id="speech-bubble"></div>
-    
-    <!-- Панель калібрування для Android (прихована) -->
-    <div class="calibration-panel" id="calibration-panel">
-        <div style="margin-bottom: 10px; font-weight: bold;">🔧 Калібрування Android</div>
-        <div>X: <button class="calibration-btn" data-axis="x" data-dir="-">-</button> 
-             <span id="pos-x">0.00</span>
-             <button class="calibration-btn" data-axis="x" data-dir="+">+</button></div>
-        <div>Y: <button class="calibration-btn" data-axis="y" data-dir="-">-</button> 
-             <span id="pos-y">0.00</span>
-             <button class="calibration-btn" data-axis="y" data-dir="+">+</button></div>
-        <div>Z: <button class="calibration-btn" data-axis="z" data-dir="-">-</button> 
-             <span id="pos-z">0.02</span>
-             <button class="calibration-btn" data-axis="z" data-dir="+">+</button></div>
-        <div>Scale: <button class="calibration-btn" data-axis="scale" data-dir="-">-</button> 
-             <span id="scale-val">1.0</span>
-             <button class="calibration-btn" data-axis="scale" data-dir="+">+</button></div>
-        <button id="save-calibration" style="margin-top: 10px; background: #4CAF50;">💾 Зберегти</button>
-        <button id="reset-calibration" style="margin-top: 5px; background: #f44336;">🔄 Скинути</button>
-    </div>
-    
-    <!-- Контейнер для сніжинок -->
-    <div id="snow-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: none;"></div>
 
     <a-scene
-        mindar-image="imageTargetSrc: marcher.mind; filterMinCF:0.0001; filterBeta:0.001; missTolerance:5; warmupTolerance:5"
+        mindar-image="imageTargetSrc: marcher.mind; filterMinCF:0.0001; filterBeta:0.001"
+        mindar-image-target="targetWidth: 0.148"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
         loading-screen="enabled: false"
@@ -230,15 +169,10 @@
             </audio>
         </a-assets>
 
-        <a-camera
-            id="camera"
-            position="0 0 1.5"
-            look-controls="enabled: true"
-        ></a-camera>
+        <a-camera position="0 0 1.5" look-controls="enabled: true"></a-camera>
 
         <a-entity mindar-image-target="targetIndex: 0">
-            <!-- ГАРАНТОВАНИЙ ФІКС ДЛЯ ANDROID -->
-            <a-entity id="garland-container" position="0 0 0.02" scale="1 1 1" rotation="0 0 0">
+            <a-entity id="garland-container" rotation="0 0 0" position="0 0.005 0.015" scale="1 1 1">
                 <!-- Гірлянда — 13 кульок у зигзаг-формі -->
                 <a-sphere class="garland-light" position="0.00  0.30  0.002" radius="0.04"
                           material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
@@ -267,19 +201,6 @@
                 <a-sphere class="garland-light" position="-0.07 -0.30 0.002" radius="0.04"
                           material="color: #000000; emissive: #000000; emissiveIntensity: 0; transparent: true; opacity: 0.3"></a-sphere>
 
-                <!-- Простий снігопад -->
-                <a-entity id="simple-snow" visible="false">
-                    <!-- Кілька маленьких сфер для снігу -->
-                    <a-sphere class="snow-particle" position="-0.15 0.4 0" radius="0.008" material="color: white; opacity: 0.7"></a-sphere>
-                    <a-sphere class="snow-particle" position="-0.1 0.5 0.05" radius="0.006" material="color: white; opacity: 0.6"></a-sphere>
-                    <a-sphere class="snow-particle" position="0.05 0.45 -0.05" radius="0.007" material="color: white; opacity: 0.8"></a-sphere>
-                    <a-sphere class="snow-particle" position="0.12 0.35 0.03" radius="0.005" material="color: white; opacity: 0.5"></a-sphere>
-                    <a-sphere class="snow-particle" position="-0.18 0.55 -0.02" radius="0.009" material="color: white; opacity: 0.6"></a-sphere>
-                    <a-sphere class="snow-particle" position="0.2 0.4 0.04" radius="0.007" material="color: white; opacity: 0.7"></a-sphere>
-                    <a-sphere class="snow-particle" position="0.0 0.6 -0.03" radius="0.006" material="color: white; opacity: 0.5"></a-sphere>
-                </a-entity>
-
-                <!-- Центральне світло -->
                 <a-light id="garland-light" type="point" intensity="0" color="#ffaa33" distance="1.5" decay="1" position="0 0.1 0.002"></a-light>
             </a-entity>
         </a-entity>
@@ -290,25 +211,13 @@
     <script>
         const loader = document.getElementById('loader');
         const speechBubble = document.getElementById('speech-bubble');
-        const calibrationPanel = document.getElementById('calibration-panel');
         const targetEntity = document.querySelector('[mindar-image-target]');
         const garlandContainer = document.getElementById('garland-container');
-        const simpleSnow = document.getElementById('simple-snow');
-        const snowContainer = document.getElementById('snow-container');
         const lightsBtn = document.getElementById('lights-btn');
         const garlandLight = document.getElementById('garland-light');
         const igniteSound = document.getElementById('ignite-sound');
         
         const lights = Array.from(document.querySelectorAll('.garland-light'));
-        const snowParticles = Array.from(document.querySelectorAll('.snow-particle'));
-        
-        // Змінні калібрування
-        let calibration = {
-            x: 0,
-            y: 0,
-            z: 0.02,
-            scale: 1.0
-        };
         
         let isGarlandOn = false;
         let garlandTimeout = null;
@@ -316,111 +225,6 @@
         let isSpeechActive = false;
         let isRecognitionStarting = false;
         let flickerIntervals = [];
-        let snowAnimations = [];
-        let snowInterval = null;
-        let isAndroid = /Android/.test(navigator.userAgent);
-
-        // Завантажуємо збережену калібрування
-        function loadCalibration() {
-            const saved = localStorage.getItem('ar_garland_calibration');
-            if (saved) {
-                try {
-                    calibration = JSON.parse(saved);
-                    updateCalibrationDisplay();
-                    applyCalibration();
-                } catch(e) {
-                    console.log('Не вдалося завантажити калібрування');
-                }
-            }
-        }
-
-        function saveCalibration() {
-            localStorage.setItem('ar_garland_calibration', JSON.stringify(calibration));
-        }
-
-        function updateCalibrationDisplay() {
-            document.getElementById('pos-x').textContent = calibration.x.toFixed(2);
-            document.getElementById('pos-y').textContent = calibration.y.toFixed(2);
-            document.getElementById('pos-z').textContent = calibration.z.toFixed(2);
-            document.getElementById('scale-val').textContent = calibration.scale.toFixed(1);
-        }
-
-        function applyCalibration() {
-            if (garlandContainer) {
-                garlandContainer.setAttribute('position', {
-                    x: calibration.x,
-                    y: calibration.y,
-                    z: calibration.z
-                });
-                garlandContainer.setAttribute('scale', {
-                    x: calibration.scale,
-                    y: calibration.scale,
-                    z: calibration.scale
-                });
-            }
-        }
-
-        // Власна система снігопаду
-        function createSnowflakes() {
-            const container = document.getElementById('snow-container');
-            container.innerHTML = '';
-            
-            const snowflakeCount = 50;
-            const snowflakes = [];
-            
-            for (let i = 0; i < snowflakeCount; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-                
-                const size = 2 + Math.random() * 5;
-                const left = Math.random() * 100;
-                const opacity = 0.3 + Math.random() * 0.7;
-                const fallDuration = 5 + Math.random() * 10;
-                const swayDuration = 3 + Math.random() * 4;
-                const swayDistance = 10 + Math.random() * 30;
-                
-                snowflake.style.width = `${size}px`;
-                snowflake.style.height = `${size}px`;
-                snowflake.style.left = `${left}%`;
-                snowflake.style.opacity = `${opacity}`;
-                
-                container.appendChild(snowflake);
-                snowflakes.push(snowflake);
-                
-                // Анімація падіння
-                snowflake.animate([
-                    { transform: `translateY(-20px) translateX(0px)`, opacity: 0 },
-                    { transform: `translateY(${window.innerHeight + 20}px) translateX(${swayDistance}px)`, opacity: opacity }
-                ], {
-                    duration: fallDuration * 1000,
-                    easing: 'linear',
-                    iterations: Infinity
-                });
-                
-                // Додаткова анімація хитавиці
-                snowflake.animate([
-                    { transform: `translateX(0px)` },
-                    { transform: `translateX(${swayDistance}px)` },
-                    { transform: `translateX(0px)` }
-                ], {
-                    duration: swayDuration * 1000,
-                    easing: 'ease-in-out',
-                    iterations: Infinity
-                });
-            }
-        }
-
-        function startSnowfall() {
-            const container = document.getElementById('snow-container');
-            container.style.display = 'block';
-            createSnowflakes();
-        }
-
-        function stopSnowfall() {
-            const container = document.getElementById('snow-container');
-            container.style.display = 'none';
-            container.innerHTML = '';
-        }
 
         function showSpeechBubble(text) {
             speechBubble.textContent = text;
@@ -438,7 +242,7 @@
             }
             
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
+            const recognition = new SpeechRecognition();
             recognition.lang = 'uk-UA';
             recognition.continuous = true;
             recognition.interimResults = false;
@@ -532,6 +336,11 @@
             lightsBtn.classList.remove('active');
         }
 
+        function resetUI() {
+            lightsBtn.textContent = '🎄 Скажи "Ялиночка!"';
+            lightsBtn.classList.remove('active');
+        }
+
         function igniteGarland() {
             if (isGarlandOn) return;
             isGarlandOn = true;
@@ -546,14 +355,12 @@
             garlandLight.setAttribute('intensity', '1.0');
 
             const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff8800', '#ff00ff', '#00ffff'];
-            
             extinguishGarlandNoUI();
 
             lights.forEach((light, index) => {
                 if (!light) return;
                 setTimeout(() => {
                     if (!isGarlandOn || !light) return;
-
                     const color = colors[index % colors.length];
                     light.setAttribute('material', {
                         color: color,
@@ -562,7 +369,6 @@
                         transparent: true,
                         opacity: 1
                     });
-
                     const interval = setInterval(() => {
                         if (!isGarlandOn || !light) {
                             clearInterval(interval);
@@ -571,41 +377,8 @@
                         const intense = 1.5 + Math.random() * 1.5;
                         light.setAttribute('material', 'emissiveIntensity', intense);
                     }, 200 + Math.random() * 300);
-
                     flickerIntervals.push(interval);
-
                 }, index * 180);
-            });
-
-            // Запускаємо снігопад
-            if (simpleSnow) simpleSnow.setAttribute('visible', 'true');
-            startSnowfall();
-            
-            // Анімація сніжинок в A-Frame
-            snowParticles.forEach(particle => {
-                if (!particle) return;
-                particle.setAttribute('material', 'opacity', 0.7);
-                
-                const animate = () => {
-                    if (!isGarlandOn) return;
-                    const pos = particle.getAttribute('position');
-                    const newY = pos.y - 0.01;
-                    if (newY < -0.5) {
-                        particle.setAttribute('position', {
-                            x: pos.x,
-                            y: 0.6,
-                            z: pos.z
-                        });
-                    } else {
-                        particle.setAttribute('position', {
-                            x: pos.x + Math.sin(Date.now() * 0.001 + pos.x) * 0.001,
-                            y: newY,
-                            z: pos.z + Math.cos(Date.now() * 0.001 + pos.z) * 0.001
-                        });
-                    }
-                    requestAnimationFrame(animate);
-                };
-                animate();
             });
 
             clearTimeout(garlandTimeout);
@@ -620,7 +393,6 @@
         function extinguishGarlandNoUI() {
             flickerIntervals.forEach(id => clearInterval(id));
             flickerIntervals = [];
-            
             lights.forEach(light => {
                 if (!light) return;
                 light.setAttribute('material', {
@@ -638,61 +410,31 @@
             lightsBtn.textContent = '🎄 Скажи "Ялиночка!"';
             lightsBtn.classList.remove('active');
             garlandLight.setAttribute('intensity', '0');
-            if (simpleSnow) simpleSnow.setAttribute('visible', 'false');
-            stopSnowfall();
             extinguishGarlandNoUI();
             clearTimeout(garlandTimeout);
         }
 
-        function stopGarland() {
-            extinguishGarland();
-        }
-
-        function resetUI() {
-            lightsBtn.textContent = '🎄 Скажи "Ялиночка!"';
-            lightsBtn.classList.remove('active');
-        }
-
-        // Завантажуємо калібрування на початку
-        loadCalibration();
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
         if (targetEntity) {
             targetEntity.addEventListener('targetFound', () => {
                 loader.style.display = 'none';
                 if (garlandContainer) garlandContainer.setAttribute('visible', 'true');
                 lightsBtn.disabled = false;
-                
-                // Застосовуємо калібрування
-                applyCalibration();
-                
-                // Показуємо панель калібрування тільки на Android
-                if (isAndroid) {
-                    calibrationPanel.style.display = 'block';
-                    showSpeechBubble("На Android? Скористайся регулятором зверху!");
-                }
-                
-                // ФІКС ДЛЯ iOS: голос блокується до першого тапу
-                if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                if (isIOS) {
                     showSpeechBubble("Натисни кнопку і скажи «Ялиночка!»");
-                    lightsBtn.textContent = "Натисни і говори!";
+                    lightsBtn.textContent = "👉 Натисни і говори!";
                 } else {
-                    setTimeout(() => {
-                        if (!isSpeechActive) startSpeechRecognition();
-                    }, 1000);
+                    setTimeout(startSpeechRecognition, 1000);
                 }
-                
-                setTimeout(() => {
-                    showSpeechBubble("🎄 Тримай маркер на долоні!");
-                }, 1500);
             });
 
             targetEntity.addEventListener('targetLost', () => {
                 if (garlandContainer) garlandContainer.setAttribute('visible', 'false');
-                stopGarland();
+                extinguishGarland();
                 stopSpeechRecognition();
                 loader.style.display = 'flex';
                 speechBubble.style.display = 'none';
-                calibrationPanel.style.display = 'none';
                 resetUI();
                 lightsBtn.disabled = true;
                 isGarlandOn = false;
@@ -700,69 +442,13 @@
         }
 
         lightsBtn.addEventListener('click', () => {
-            // ФІКС ДЛЯ iOS: активуємо голос при першому натисканні
-            if (!isSpeechActive && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                startSpeechRecognition();
-                return;
-            }
-            
+            if (!isSpeechActive) startSpeechRecognition();
             if (!isGarlandOn) {
                 igniteGarland();
                 showSpeechBubble("✨ Ялиночка запалилася!");
             } else {
                 extinguishGarland();
                 showSpeechBubble("💤 Ялиночка згасла!");
-            }
-        });
-
-        // Обробка кнопок калібрування
-        document.querySelectorAll('.calibration-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const axis = this.getAttribute('data-axis');
-                const dir = this.getAttribute('data-dir');
-                const step = axis === 'scale' ? 0.1 : 0.005;
-                
-                if (dir === '+') {
-                    calibration[axis] += step;
-                } else {
-                    calibration[axis] -= step;
-                }
-                
-                updateCalibrationDisplay();
-                applyCalibration();
-            });
-        });
-
-        document.getElementById('save-calibration').addEventListener('click', () => {
-            saveCalibration();
-            showSpeechBubble("Калібрування збережено!");
-        });
-
-        document.getElementById('reset-calibration').addEventListener('click', () => {
-            calibration = { x: 0, y: 0, z: 0.02, scale: 1.0 };
-            updateCalibrationDisplay();
-            applyCalibration();
-            localStorage.removeItem('ar_garland_calibration');
-            showSpeechBubble("Калібрування скинуто!");
-        });
-
-        // Секретна комбінація для показу панелі на iOS
-        let tapCount = 0;
-        let lastTap = 0;
-        document.addEventListener('click', (e) => {
-            if (e.target === document.body || e.target === document.documentElement) {
-                const now = Date.now();
-                if (now - lastTap < 500) {
-                    tapCount++;
-                    if (tapCount >= 3) {
-                        calibrationPanel.style.display = 'block';
-                        showSpeechBubble("Секретна панель калібрування!");
-                        tapCount = 0;
-                    }
-                } else {
-                    tapCount = 1;
-                }
-                lastTap = now;
             }
         });
 
@@ -784,7 +470,7 @@
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 stopSpeechRecognition();
-                stopGarland();
+                extinguishGarland();
             } else if (!isSpeechActive && document.visibilityState === 'visible' && !lightsBtn.disabled) {
                 setTimeout(startSpeechRecognition, 1000);
             }
@@ -792,7 +478,7 @@
 
         window.addEventListener('beforeunload', () => {
             stopSpeechRecognition();
-            stopGarland();
+            extinguishGarland();
         });
 
         function fixHeight() {
@@ -802,7 +488,6 @@
         window.addEventListener('resize', fixHeight);
 
         console.log('🚀 Ялиночка завантажена!');
-        console.log('📱 Пристрій:', isAndroid ? 'Android' : 'iOS/інший');
         setTimeout(() => {
             if (loader.style.display !== 'none') {
                 showSpeechBubble("📱 Наведи камеру на ялинку!");
